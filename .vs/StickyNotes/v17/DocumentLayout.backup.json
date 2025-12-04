@@ -1,0 +1,340 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Projects\\rammara\\StickyNotes\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\viewmodels\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\viewmodels\\relaycommand.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\viewmodels\\viewmodelbase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\views\\windownote.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\views\\windownote.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\views\\windownote.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\views\\windownote.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\views\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\views\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\views\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\views\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\viewmodels\\hotkeydialogviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\viewmodels\\hotkeydialogviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\viewmodels\\settingsviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\viewmodels\\settingsviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\viewmodels\\windownoteviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\viewmodels\\windownoteviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\viewmodels\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\viewmodels\\mainviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\services\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\services\\settingsservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\services\\trayiconservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\services\\trayiconservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\services\\globalhookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\services\\globalhookservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\services\\nativemethods.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\services\\nativemethods.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\models\\settingsmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\models\\settingsmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\app.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|d:\\projects\\rammara\\stickynotes\\stickynotes\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{4413E7FA-F8AA-447F-BAF7-824BC351F534}|StickyNotes\\StickyNotes.csproj|solutionrelative:stickynotes\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:131:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0174dea2-fdbe-4ef1-8f99-c0beae78880f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RelayCommand.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\RelayCommand.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\ViewModels\\RelayCommand.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\RelayCommand.cs",
+              "RelativeToolTip": "StickyNotes\\ViewModels\\RelayCommand.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:33:37.836Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ViewModelBase.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\ViewModelBase.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\ViewModels\\ViewModelBase.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\ViewModelBase.cs",
+              "RelativeToolTip": "StickyNotes\\ViewModels\\ViewModelBase.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:32:59.677Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "WindowNote.xaml.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\WindowNote.xaml.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Views\\WindowNote.xaml.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\WindowNote.xaml.cs",
+              "RelativeToolTip": "StickyNotes\\Views\\WindowNote.xaml.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAowA0AAAA/AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:32:37.762Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WindowNote.xaml",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\WindowNote.xaml",
+              "RelativeDocumentMoniker": "StickyNotes\\Views\\WindowNote.xaml",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\WindowNote.xaml",
+              "RelativeToolTip": "StickyNotes\\Views\\WindowNote.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-12-04T11:32:01.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Views\\MainWindow.xaml.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\MainWindow.xaml.cs",
+              "RelativeToolTip": "StickyNotes\\Views\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAYwCkAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:30:09.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "StickyNotes\\Views\\MainWindow.xaml",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Views\\MainWindow.xaml",
+              "RelativeToolTip": "StickyNotes\\Views\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-12-04T11:30:03.315Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "HotkeyDialogViewModel.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\HotkeyDialogViewModel.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\ViewModels\\HotkeyDialogViewModel.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\HotkeyDialogViewModel.cs",
+              "RelativeToolTip": "StickyNotes\\ViewModels\\HotkeyDialogViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:29:36.973Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SettingsViewModel.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\SettingsViewModel.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\ViewModels\\SettingsViewModel.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\SettingsViewModel.cs",
+              "RelativeToolTip": "StickyNotes\\ViewModels\\SettingsViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:29:14.356Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "WindowNoteViewModel.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\WindowNoteViewModel.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\ViewModels\\WindowNoteViewModel.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\WindowNoteViewModel.cs",
+              "RelativeToolTip": "StickyNotes\\ViewModels\\WindowNoteViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:28:54.526Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MainViewModel.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\MainViewModel.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\ViewModels\\MainViewModel.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\ViewModels\\MainViewModel.cs",
+              "RelativeToolTip": "StickyNotes\\ViewModels\\MainViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:28:05.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "SettingsService.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\SettingsService.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Services\\SettingsService.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\SettingsService.cs",
+              "RelativeToolTip": "StickyNotes\\Services\\SettingsService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:27:31.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TrayIconService.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\TrayIconService.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Services\\TrayIconService.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\TrayIconService.cs",
+              "RelativeToolTip": "StickyNotes\\Services\\TrayIconService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:27:02.837Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "GlobalHookService.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\GlobalHookService.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Services\\GlobalHookService.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\GlobalHookService.cs",
+              "RelativeToolTip": "StickyNotes\\Services\\GlobalHookService.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAAswFMAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:26:47.997Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "NativeMethods.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\NativeMethods.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Services\\NativeMethods.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Services\\NativeMethods.cs",
+              "RelativeToolTip": "StickyNotes\\Services\\NativeMethods.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:26:29.23Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "SettingsModel.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Models\\SettingsModel.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\Models\\SettingsModel.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\Models\\SettingsModel.cs",
+              "RelativeToolTip": "StickyNotes\\Models\\SettingsModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:26:09.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "App.xaml.cs",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\App.xaml.cs",
+              "RelativeDocumentMoniker": "StickyNotes\\App.xaml.cs",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\App.xaml.cs",
+              "RelativeToolTip": "StickyNotes\\App.xaml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-04T11:24:11.177Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "App.xaml",
+              "DocumentMoniker": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\App.xaml",
+              "RelativeDocumentMoniker": "StickyNotes\\App.xaml",
+              "ToolTip": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\App.xaml",
+              "RelativeToolTip": "StickyNotes\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2025-12-04T11:23:53.986Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 924,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

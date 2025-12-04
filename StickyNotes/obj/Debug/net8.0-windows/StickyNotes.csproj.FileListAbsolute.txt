@@ -1,0 +1,4 @@
+D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\MainWindow.g.cs
+D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\App.g.cs
+D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\StickyNotes_MarkupCompile.cache
+D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\StickyNotes_MarkupCompile.lref

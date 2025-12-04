@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "5PRveQyglwk=",
+  "success": true,
+  "projectFilePath": "D:\\Projects\\rammara\\StickyNotes\\StickyNotes\\StickyNotes.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Aklimov\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "C:\\Users\\Aklimov\\.nuget\\packages\\system.drawing.common\\8.0.3\\system.drawing.common.8.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
