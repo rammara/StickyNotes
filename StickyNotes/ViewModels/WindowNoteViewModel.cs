@@ -2,10 +2,10 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using StikyNotes.Models;
-using StikyNotes.Views;
+using StickyNotes.Models;
+using StickyNotes.Views;
 
-namespace StikyNotes.ViewModels
+namespace StickyNotes.ViewModels
 {
     public class WindowNoteViewModel : ViewModelBase
     {
@@ -19,11 +19,15 @@ namespace StikyNotes.ViewModels
         private bool _isDragging = false;
         private Point _dragStartPoint;
 
+        // Обновим конструктор WindowNoteViewModel
         public WindowNoteViewModel(WindowNote window, SettingsModel settings, int counter)
         {
             _window = window;
             _settings = settings;
             _title = $"New note {counter}...";
+
+            // Устанавливаем шрифт из настроек
+            ApplyFontSettings();
 
             InitializeCommands();
             LoadWindowPosition();
@@ -206,7 +210,7 @@ namespace StikyNotes.ViewModels
             try
             {
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string positionFile = Path.Combine(appData, "StikyNotes", "window_position.json");
+                string positionFile = Path.Combine(appData, "StickyNotes", "window_position.json");
 
                 if (File.Exists(positionFile))
                 {
@@ -228,12 +232,12 @@ namespace StikyNotes.ViewModels
             }
         } // LoadWindowPosition
 
-        private void SaveWindowPosition()
+        public void SaveWindowPosition()
         {
             try
             {
                 string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                string appFolder = Path.Combine(appData, "StikyNotes");
+                string appFolder = Path.Combine(appData, "StickyNotes");
                 Directory.CreateDirectory(appFolder);
 
                 var position = new WindowPosition
@@ -252,6 +256,63 @@ namespace StikyNotes.ViewModels
                 // Игнорируем ошибки сохранения позиции
             }
         } // SaveWindowPosition
+        
+        private System.Windows.Media.FontFamily _fontFamily = new("Consolas");
+        private double _fontSize = 12;
+        private FontWeight _fontWeight = FontWeights.Normal;
+        private FontStyle _fontStyle = FontStyles.Normal;
+
+        public System.Windows.Media.FontFamily FontFamily
+        {
+            get => _fontFamily;
+            set
+            {
+                _fontFamily = value;
+                OnPropertyChanged();
+            }
+        } // FontFamily
+
+        public double FontSize
+        {
+            get => _fontSize;
+            set
+            {
+                _fontSize = value;
+                OnPropertyChanged();
+            }
+        } // FontSize
+
+        public System.Windows.FontWeight FontWeight
+        {
+            get => _fontWeight;
+            set
+            {
+                _fontWeight = value;
+                OnPropertyChanged();
+            }
+        } // FontWeight
+
+        public System.Windows.FontStyle FontStyle
+        {
+            get => _fontStyle;
+            set
+            {
+                _fontStyle = value;
+                OnPropertyChanged();
+            }
+        } // FontStyle
+
+        private void ApplyFontSettings()
+        {
+            FontFamily = new System.Windows.Media.FontFamily(_settings.DefaultFont.FontFamily);
+            FontSize = _settings.DefaultFont.Size;
+            FontWeight = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Bold)
+                ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal;
+            FontStyle = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Italic)
+                ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal;
+        } // ApplyFontSettings
+
+
     } // WindowNoteViewModel
 
     public class WindowPosition

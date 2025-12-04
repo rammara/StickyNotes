@@ -1,18 +1,11 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace StikyNotes.ViewModels
+namespace StickyNotes.ViewModels
 {
-    public class RelayCommand : ICommand
+    public class RelayCommand(Action execute, Func<bool>? canExecute = null) : ICommand
     {
-        private readonly Action _execute;
-        private readonly Func<bool>? _canExecute;
-
-        public RelayCommand(Action execute, Func<bool>? canExecute = null)
-        {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        } // RelayCommand
+        private readonly Action _execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
         public event EventHandler? CanExecuteChanged
         {
@@ -20,20 +13,13 @@ namespace StikyNotes.ViewModels
             remove => CommandManager.RequerySuggested -= value;
         } // CanExecuteChanged
 
-        public bool CanExecute(object? parameter) => _canExecute?.Invoke() ?? true;
+        public bool CanExecute(object? parameter) => canExecute?.Invoke() ?? true;
         public void Execute(object? parameter) => _execute();
     } // RelayCommand
 
-    public class RelayCommand<T> : ICommand
+    public class RelayCommand<T>(Action<T> execute, Predicate<T>? canExecute = null) : ICommand
     {
-        private readonly Action<T> _execute;
-        private readonly Predicate<T>? _canExecute;
-
-        public RelayCommand(Action<T> execute, Predicate<T>? canExecute = null)
-        {
-            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
-            _canExecute = canExecute;
-        } // RelayCommand
+        private readonly Action<T> _execute = execute ?? throw new ArgumentNullException(nameof(execute));
 
         public event EventHandler? CanExecuteChanged
         {
@@ -42,7 +28,7 @@ namespace StikyNotes.ViewModels
         } // CanExecuteChanged
 
         public bool CanExecute(object? parameter) =>
-            _canExecute?.Invoke((T)parameter!) ?? true;
+            canExecute?.Invoke((T)parameter!) ?? true;
 
         public void Execute(object? parameter)
         {
@@ -52,4 +38,4 @@ namespace StikyNotes.ViewModels
             }
         } // Execute
     } // RelayCommand<T>
-}
+} // namespace

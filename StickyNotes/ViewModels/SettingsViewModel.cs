@@ -1,26 +1,27 @@
-﻿using System;
+﻿using StickyNotes.Models;
+using StickyNotes.Services;
+using StickyNotes.Views;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Win32;
-using StikyNotes.Models;
-using StikyNotes.Services;
-using StikyNotes.Views;
 
-namespace StikyNotes.ViewModels
+namespace StickyNotes.ViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
         private readonly SettingsService _settingsService;
-        private SettingsModel _settings;
+        private readonly SettingsModel _settings;
         private HotkeyDialog? _hotkeyDialog;
 
+        // Обновим конструктор SettingsViewModel для инициализации свойств шрифта
         public SettingsViewModel(SettingsService settingsService)
         {
             _settingsService = settingsService;
             _settings = _settingsService.LoadSettings();
 
             InitializeCommands();
+            UpdateFontProperties();
         } // SettingsViewModel
+
 
         private void InitializeCommands()
         {
@@ -76,24 +77,6 @@ namespace StikyNotes.ViewModels
         public ICommand ChangeDefaultFolderCommand { get; private set; } = null!;
         public ICommand OpenDefaultFolderCommand { get; private set; } = null!;
         public ICommand ChangeFontCommand { get; private set; } = null!;
-
-        private void SaveSettings()
-        {
-            _settingsService.SaveSettings(_settings);
-
-            if (Application.Current.Windows.Count > 0)
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is SettingsWindow settingsWindow)
-                    {
-                        settingsWindow.DialogResult = true;
-                        settingsWindow.Close();
-                        break;
-                    }
-                }
-            }
-        } // SaveSettings
 
         private void Cancel()
         {
@@ -177,21 +160,110 @@ namespace StikyNotes.ViewModels
             }
         } // OpenDefaultFolder
 
+        // Добавим в SettingsViewModel.cs следующие свойства:
+
+        private System.Windows.Media.FontFamily _selectedFontFamily = new("Consolas");
+        private double _selectedFontSize = 12;
+        private FontWeight _selectedFontWeight = FontWeights.Normal;
+        private FontStyle _selectedFontStyle = FontStyles.Normal;
+
+        public System.Windows.Media.FontFamily SelectedFontFamily
+        {
+            get => _selectedFontFamily;
+            set
+            {
+                _selectedFontFamily = value;
+                OnPropertyChanged();
+            }
+        } // SelectedFontFamily
+
+        public double SelectedFontSize
+        {
+            get => _selectedFontSize;
+            set
+            {
+                _selectedFontSize = value;
+                OnPropertyChanged();
+            }
+        } // SelectedFontSize
+
+        public System.Windows.FontWeight SelectedFontWeight
+        {
+            get => _selectedFontWeight;
+            set
+            {
+                _selectedFontWeight = value;
+                OnPropertyChanged();
+            }
+        } // SelectedFontWeight
+
+        public System.Windows.FontStyle SelectedFontStyle
+        {
+            get => _selectedFontStyle;
+            set
+            {
+                _selectedFontStyle = value;
+                OnPropertyChanged();
+            }
+        } // SelectedFontStyle
+
+        // Обновим метод ChangeFont в SettingsViewModel.cs
         private void ChangeFont()
         {
-            var dialog = new System.Windows.Forms.FontDialog
+            // Создаем диалог выбора шрифта
+            var fontDialog = new System.Windows.Forms.FontDialog
             {
                 Font = _settings.DefaultFont.ToFont(),
-                ShowEffects = true
+                ShowEffects = true,
+                ShowColor = false
             };
 
-            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fontDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                _settings.DefaultFont.FontFamily = dialog.Font.FontFamily.Name;
-                _settings.DefaultFont.Size = dialog.Font.Size;
-                _settings.DefaultFont.Style = dialog.Font.Style;
+                _settings.DefaultFont.FontFamily = fontDialog.Font.FontFamily.Name;
+                _settings.DefaultFont.Size = fontDialog.Font.Size;
+                _settings.DefaultFont.Style = fontDialog.Font.Style;
+
+                // Обновляем свойства для привязки
+                SelectedFontFamily = new System.Windows.Media.FontFamily(_settings.DefaultFont.FontFamily);
+                SelectedFontSize = _settings.DefaultFont.Size;
+                SelectedFontWeight = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Bold)
+                    ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal;
+                SelectedFontStyle = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Italic)
+                    ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal;
+
                 OnPropertyChanged(nameof(DefaultFontDisplay));
             }
         } // ChangeFont
+
+        private void UpdateFontProperties()
+        {
+            SelectedFontFamily = new System.Windows.Media.FontFamily(_settings.DefaultFont.FontFamily);
+            SelectedFontSize = _settings.DefaultFont.Size;
+            SelectedFontWeight = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Bold)
+                ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal;
+            SelectedFontStyle = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Italic)
+                ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal;
+        } // UpdateFontProperties
+
+        // Обновим метод SaveSettings для сохранения шрифта
+        private void SaveSettings()
+        {
+            _settingsService.SaveSettings(_settings);
+
+            if (Application.Current.Windows.Count > 0)
+            {
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is SettingsWindow settingsWindow)
+                    {
+                        settingsWindow.DialogResult = true;
+                        settingsWindow.Close();
+                        break;
+                    }
+                }
+            }
+        } // SaveSettings
+
     } // SettingsViewModel
 }

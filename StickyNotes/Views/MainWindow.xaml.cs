@@ -1,23 +1,8 @@
-﻿using StikyNotes.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using StickyNotes.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace StickyNotes.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private MainViewModel? _viewModel;
@@ -25,14 +10,17 @@ namespace StickyNotes.Views
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += OnLoaded;
         } // MainWindow
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Создаем ViewModel после загрузки окна
             _viewModel = new MainViewModel(this);
             DataContext = _viewModel;
-        } // OnLoaded
+
+            // Скрываем окно после инициализации трея
+            Hide();
+        } // Window_Loaded
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
@@ -40,5 +28,5 @@ namespace StickyNotes.Views
             e.Cancel = true;
             Hide();
         } // OnClosing
-    }
-}
+    } // MainWindow
+} // namespace

@@ -1,12 +1,12 @@
-﻿using StikyNotes.Models;
-using StikyNotes.Services;
-using StikyNotes.Views;
+﻿using StickyNotes.Models;
+using StickyNotes.Services;
+using StickyNotes.Views;
 using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 
-namespace StikyNotes.ViewModels
+namespace StickyNotes.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
@@ -33,18 +33,44 @@ namespace StikyNotes.ViewModels
             UpdateStartupRegistry();
         } // MainViewModel
 
+        // Обновим метод OnGlobalKeyDown в MainViewModel.cs
         private void OnGlobalKeyDown(object? sender, KeyEventArgs e)
         {
-            if (IsHotkeyPressed(e, _settings.MainHotkey))
+            try
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                // Проверяем, что это действительно глобальное нажатие, а не в окне приложения
+                if (IsHotkeyPressed(e, _settings.MainHotkey))
                 {
-                    CreateNewNote();
-                });
+                    // Проверяем, что фокус не в текстовом поле (чтобы избежать конфликтов)
+                    if (Keyboard.FocusedElement is not System.Windows.Controls.TextBox focusedElement)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            CreateNewNote();
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in global hotkey handler: {ex.Message}");
             }
         } // OnGlobalKeyDown
 
-        private bool IsHotkeyPressed(KeyEventArgs e, Hotkey hotkey)
+        // Добавим метод для проверки горячей клавиши сохранения в окне заметки
+        public bool IsSaveHotkeyPressed(KeyEventArgs e)
+        {
+            try
+            {
+                return IsHotkeyPressed(e, _settings.SaveHotkey);
+            }
+            catch
+            {
+                return false;
+            }
+        } // IsSaveHotkeyPressed
+
+        private static bool IsHotkeyPressed(KeyEventArgs e, Hotkey hotkey)
         {
             bool ctrlPressed = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
             bool shiftPressed = Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift);
@@ -151,21 +177,19 @@ namespace StikyNotes.ViewModels
             try
             {
                 const string registryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-                using (var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryPath, true))
+                using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryPath, true);
+                if (key != null)
                 {
-                    if (key != null)
-                    {
-                        string appPath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ??
-                            System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    string appPath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ??
+                        System.Reflection.Assembly.GetExecutingAssembly().Location;
 
-                        if (_settings.StartWithWindows)
-                        {
-                            key.SetValue("StikyNotes", $"\"{appPath}\"");
-                        }
-                        else
-                        {
-                            key.DeleteValue("StikyNotes", false);
-                        }
+                    if (_settings.StartWithWindows)
+                    {
+                        key.SetValue("StickyNotes", $"\"{appPath}\"");
+                    }
+                    else
+                    {
+                        key.DeleteValue("StickyNotes", false);
                     }
                 }
             }
@@ -182,4 +206,4 @@ namespace StikyNotes.ViewModels
             Application.Current.Shutdown();
         } // ExitApplication
     } // MainViewModel
-}
+} // namespace

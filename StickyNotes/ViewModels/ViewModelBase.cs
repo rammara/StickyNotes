@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace StikyNotes.ViewModels
+namespace StickyNotes.ViewModels
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {

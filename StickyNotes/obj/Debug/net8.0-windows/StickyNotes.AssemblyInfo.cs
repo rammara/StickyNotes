@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StickyNotes")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e10149b547920754be0456e2b3be7e7ae731c72a")]
 [assembly: System.Reflection.AssemblyProductAttribute("StickyNotes")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StickyNotes")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,4 +1,4 @@
-﻿<Window x:Class="StikyNotes.Views.WindowNote"
+﻿<Window x:Class="StickyNotes.Views.WindowNote"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="{Binding Title}" 
@@ -155,16 +155,20 @@
                     </ScrollViewer.Resources>
 
                     <TextBox x:Name="NoteTextBox"
-                             Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             AcceptsReturn="True"
-                             AcceptsTab="True"
-                             TextWrapping="Wrap"
-                             VerticalScrollBarVisibility="Hidden"
-                             HorizontalScrollBarVisibility="Hidden"
-                             FontFamily="Consolas"
-                             FontSize="12"/>
+                         Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         AcceptsReturn="True"
+                         AcceptsTab="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Hidden"
+                         HorizontalScrollBarVisibility="Hidden"
+                         FontFamily="{Binding FontFamily}"
+                         FontSize="{Binding FontSize}"
+                         FontWeight="{Binding FontWeight}"
+                         FontStyle="{Binding FontStyle}"
+                         VerticalContentAlignment="Top"
+                         Padding="10"/>
                 </ScrollViewer>
             </Grid>
         </Border>

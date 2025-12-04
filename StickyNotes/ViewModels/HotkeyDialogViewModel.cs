@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Windows.Input;
-using StikyNotes.Models;
+using StickyNotes.Models;
 
-namespace StikyNotes.ViewModels
+namespace StickyNotes.ViewModels
 {
     public class HotkeyDialogViewModel : ViewModelBase
     {
-        private Hotkey _selectedHotkey = new Hotkey();
+        private Hotkey _selectedHotkey = new();
 
         public HotkeyDialogViewModel()
         {
@@ -93,7 +93,7 @@ namespace StikyNotes.ViewModels
 
             System.Windows.Forms.Keys key = (System.Windows.Forms.Keys)KeyInterop.VirtualKeyFromKey(e.Key);
 
-            SelectedHotkey = new Hotkey
+            SelectedHotkey = new Hotkey()
             {
                 Key = key,
                 Modifiers = modifiers

@@ -4,12 +4,12 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 
-namespace StikyNotes.Services
+namespace StickyNotes.Services
 {
     public class GlobalHookService : IDisposable
     {
         private IntPtr _hookId = IntPtr.Zero;
-        private NativeMethods.LowLevelKeyboardProc _proc;
+        private readonly NativeMethods.LowLevelKeyboardProc _proc;
         private bool _disposed = false;
 
         public event EventHandler<KeyEventArgs>? KeyDown;
@@ -23,14 +23,12 @@ namespace StikyNotes.Services
 
         private void SetHook()
         {
-            using (Process curProcess = Process.GetCurrentProcess())
-            using (ProcessModule? curModule = curProcess.MainModule)
+            using Process curProcess = Process.GetCurrentProcess();
+            using ProcessModule? curModule = curProcess.MainModule;
+            if (curModule != null)
             {
-                if (curModule != null)
-                {
-                    _hookId = NativeMethods.SetWindowsHookEx(NativeMethods.WH_KEYBOARD_LL, _proc,
-                        NativeMethods.GetModuleHandle(curModule.ModuleName), 0);
-                }
+                _hookId = NativeMethods.SetWindowsHookExInternal(NativeMethods.WH_KEYBOARD_LL, _proc,
+                    NativeMethods.GetModuleHandleInternal(curModule.ModuleName), 0);
             }
         } // SetHook
 
@@ -55,7 +53,7 @@ namespace StikyNotes.Services
                 }
             }
 
-            return NativeMethods.CallNextHookEx(_hookId, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookExInternal(_hookId, nCode, wParam, lParam);
         } // HookCallback
 
         public void Dispose()
@@ -70,7 +68,7 @@ namespace StikyNotes.Services
             {
                 if (_hookId != IntPtr.Zero)
                 {
-                    NativeMethods.UnhookWindowsHookEx(_hookId);
+                    NativeMethods.UnhookWindowsHookExInternal(_hookId);
                 }
                 _disposed = true;
             }

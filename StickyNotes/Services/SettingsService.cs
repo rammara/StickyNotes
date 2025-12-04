@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
-using StikyNotes.Models;
+using StickyNotes.Models;
 
-namespace StikyNotes.Services
+namespace StickyNotes.Services
 {
     public class SettingsService
     {
@@ -12,7 +12,7 @@ namespace StikyNotes.Services
         public SettingsService()
         {
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string appFolder = Path.Combine(appData, "StikyNotes");
+            string appFolder = Path.Combine(appData, "StickyNotes");
             Directory.CreateDirectory(appFolder);
             _settingsPath = Path.Combine(appFolder, "settings.json");
         } // SettingsService
@@ -35,12 +35,13 @@ namespace StikyNotes.Services
             return new SettingsModel();
         } // LoadSettings
 
+        private readonly JsonSerializerOptions _SerializationOptions = new() { WriteIndented = true };
+
         public void SaveSettings(SettingsModel settings)
         {
             try
             {
-                var options = new JsonSerializerOptions { WriteIndented = true };
-                string json = JsonSerializer.Serialize(settings, options);
+                string json = JsonSerializer.Serialize(settings, _SerializationOptions);
                 File.WriteAllText(_settingsPath, json);
             }
             catch (Exception ex)

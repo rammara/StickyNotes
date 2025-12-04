@@ -1,0 +1,184 @@
+## Rider (JetBrains IDEs)
+.idea/
+*.sln.iml
+*.DotSettings
+*.DotSettings.user
+_ReSharper.Caches/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+## Visual Studio
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.db
+
+## Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Dd]ebugPublic/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]uild/
+[Bb]uildOutput/
+
+## Roslyn cache
+*.csprojAssemblyReference.cache
+
+## MSTest test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+## NuGet
+[Nn]uget/
+*.nupkg
+packages/
+nuget.exe
+
+## User-specific files
+*.suo
+*.user
+*.userprefs
+*.sln.docstates
+*.cachefile
+
+## Backup files
+*.bak
+*.tmp
+*.temp
+[Tt]emp/
+~$*
+
+## Windows thumbnail cache
+Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+## Mac files
+.DS_Store
+
+## Localization directories
+cs/
+de/
+es/
+fr/
+it/
+ja/
+ko/
+pl/
+pt-BR/
+ru/
+tr/
+zh-Hans/
+zh-Hant/
+
+## Runtimes directories
+runtimes/
+
+## ReSharper
+_ReSharper.*
+*.resharper
+*.Resharper
+
+## DotCover
+*.dotCover
+
+## NCrunch
+*.ncrunch*
+.*crunch*.local.xml
+
+## Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+
+## TFS 2012 Local Workspace
+$tf/
+
+## Azure Functions local.settings.json
+local.settings.json
+
+## Others
+*.log
+*.log1
+*.log2
+*.pidb
+*.msi
+*.msm
+*.msp
+*.pidb
+*.pgc
+*.pgd
+*.rsp
+*.sap
+*.cache
+*.ilk
+*.pdb
+*.dll
+*.exe
+*.pch
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp_proj
+*_wpftmp.csproj
+*.dotCover
+*.cachefile
+*.dbmdl
+GeneratedInternalTypeHelper.g.cs
+GeneratedInternalTypeHelper.g.i.cs
+App.g.cs
+App.g.i.cs
+*.xaml.g.cs
+*.xaml.g.i.cs
+*.g.resources
+*.g.i.resources
+*.i.cs
+project.assets.json
+project.nuget.cache
+*.nuget.props
+*.nuget.targets
+*.sourcelink.json
+*.editorconfig
+obj/project.assets.json
+obj/project.nuget.cache
+obj/project.nuget.props
+obj/project.nuget.targets
+obj/*.sourcelink.json
+obj/*.editorconfig
+
+## User-specific project files
+*.csproj.user
+*.vbproj.user
+*.fsproj.user
+
+## Hidden files
+.*
+!.gitignore
+
+## Output directories
+out/
+dist/
+publish/
