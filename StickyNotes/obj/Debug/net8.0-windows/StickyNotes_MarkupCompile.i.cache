@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
 D:\Projects\rammara\StickyNotes\StickyNotes\App.xaml
-4860403664
+3-1789901194
 
-22177797339
+27-1815220850
 23136512033
-Views\HotKeyDialog.xaml;Views\MainWindow.xaml;Views\SettingsWindow.xaml;Views\WindowNote.xaml;
+Views\HotKeyDialog.xaml;Views\SettingsWindow.xaml;Views\WindowNote.xaml;
 
-False
+True
 

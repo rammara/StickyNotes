@@ -1,23 +1,25 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Interop;
 
 namespace StickyNotes.Services
 {
     public class TrayIconService : IDisposable
     {
-        private readonly Window _window;
+        private readonly NativeWindowHandler _windowHandler;
         private NativeMethods.NOTIFYICONDATA _iconData;
         private bool _disposed = false;
         private bool _iconAdded = false;
+        private WndProcDelegate? _windowProcDelegate;
+        private IntPtr _originalWndProc;
 
         public event EventHandler? DoubleClick;
         public event EventHandler? RightClick;
 
-        public TrayIconService(Window window)
+        public TrayIconService(NativeWindowHandler windowHandler)
         {
-            _window = window;
+            _windowHandler = windowHandler;
             Initialize();
         } // TrayIconService
 
@@ -25,11 +27,7 @@ namespace StickyNotes.Services
         {
             try
             {
-                // Ждем, пока окно будет полностью инициализировано
-                _window.Loaded += OnWindowLoaded;
-                _window.SourceInitialized += OnSourceInitialized;
-
-                // Создаем и инициализируем структуру иконки
+                // Инициализируем структуру иконки
                 _iconData = new NativeMethods.NOTIFYICONDATA
                 {
                     cbSize = Marshal.SizeOf(typeof(NativeMethods.NOTIFYICONDATA)),
@@ -37,66 +35,81 @@ namespace StickyNotes.Services
                     uFlags = NativeMethods.NIF_MESSAGE | NativeMethods.NIF_ICON | NativeMethods.NIF_TIP,
                     uCallbackMessage = NativeMethods.WM_USER + 1,
                     szTip = "StickyNotes",
-                    hWnd = IntPtr.Zero
+                    hWnd = _windowHandler.WindowHandle
                 };
 
                 // Загружаем иконку
                 LoadIcon();
 
-                ComponentDispatcher.ThreadPreprocessMessage += ComponentDispatcher_ThreadPreprocessMessage;
+                // Устанавливаем свою оконную процедуру для обработки сообщений
+                HookWindowProc();
+
+                // Добавляем иконку в трей
+                AddTrayIcon();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Ошибка инициализации TrayIconService: {ex.Message}");
+                throw;
             }
         } // Initialize
 
-        private void ComponentDispatcher_ThreadPreprocessMessage(ref System.Windows.Interop.MSG msg, ref bool handled)
+        private void HookWindowProc()
         {
-            if (msg.message == _iconData.uCallbackMessage)
+            if (_windowHandler.WindowHandle == IntPtr.Zero) return;
+
+            // Создаем делегат для оконной процедуры
+            _windowProcDelegate = new WndProcDelegate(WindowProc);
+
+            // Устанавливаем новую оконную процедуру и сохраняем оригинальную
+            _originalWndProc = NativeMethods.SetWindowLongPtrInternal(
+                _windowHandler.WindowHandle,
+                NativeMethods.GWLP_WNDPROC,
+                Marshal.GetFunctionPointerForDelegate(_windowProcDelegate));
+        } // HookWindowProc
+
+        private void UnhookWindowProc()
+        {
+            if (_windowHandler.WindowHandle != IntPtr.Zero && _originalWndProc != IntPtr.Zero)
             {
-                switch (msg.lParam.ToInt32())
+                NativeMethods.SetWindowLongPtrInternal(_windowHandler.WindowHandle,
+                    NativeMethods.GWLP_WNDPROC, _originalWndProc);
+                _originalWndProc = IntPtr.Zero;
+            }
+        } // UnhookWindowProc
+
+        private IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
+        {
+            // Обрабатываем сообщения от иконки трея
+            if (msg == _iconData.uCallbackMessage) 
+            {
+                switch (checked((int)lParam))
                 {
                     case NativeMethods.WM_LBUTTONDBLCLK:
                         DoubleClick?.Invoke(this, EventArgs.Empty);
-                        break;
+                        return IntPtr.Zero;
+
                     case NativeMethods.WM_RBUTTONUP:
                         RightClick?.Invoke(this, EventArgs.Empty);
-                        break;
+                        return IntPtr.Zero;
                 }
             }
-        } // ComponentDispatcher_ThreadPreprocessMessage
 
-        private void OnWindowLoaded(object sender, RoutedEventArgs e)
-        {
-            // Окно загружено, пробуем добавить иконку
-            TryAddIcon();
-        } // OnWindowLoaded
+            // Для остальных сообщений вызываем стандартную процедуру
+            if (_originalWndProc != IntPtr.Zero)
+            {
+                return NativeMethods.CallWindowProcInternal(_originalWndProc, hWnd, msg, wParam, lParam);
+            }
 
-        private void OnSourceInitialized(object? sender, EventArgs e)
-        {
-            // Окно получило handle, пробуем добавить иконку
-            TryAddIcon();
-        } // OnSourceInitialized
+            return NativeMethods.DefWindowProcInternal(hWnd, msg, wParam, lParam);
+        } // WindowProc
 
-        private void TryAddIcon()
+        private void AddTrayIcon()
         {
-            if (_iconAdded) return;
+            if (_iconAdded || _windowHandler.WindowHandle == IntPtr.Zero) return;
 
             try
             {
-                // Получаем handle окна
-                var windowHelper = new WindowInteropHelper(_window);
-                if (windowHelper.Handle == IntPtr.Zero)
-                {
-                    // Handle еще не готов, пробуем позже
-                    System.Diagnostics.Debug.WriteLine("Handle окна еще не готов");
-                    return;
-                }
-
-                _iconData.hWnd = windowHelper.Handle;
-
-                // Добавляем иконку в трей
                 bool success = NativeMethods.Shell_NotifyIconInternal(NativeMethods.NIM_ADD, ref _iconData);
 
                 if (success)
@@ -108,20 +121,36 @@ namespace StickyNotes.Services
                 {
                     int error = Marshal.GetLastWin32Error();
                     System.Diagnostics.Debug.WriteLine($"Ошибка добавления иконки: {error}");
+                    throw new InvalidOperationException($"Failed to add tray icon. Error code: {error}");
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Ошибка при добавлении иконки: {ex.Message}");
+                throw;
             }
-        } // TryAddIcon
+        } // AddTrayIcon
 
         private void LoadIcon()
         {
             try
             {
-                // Пробуем получить иконку из исполняемого файла
-                string? exePath = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+                // Пытаемся загрузить иконку из ресурсов
+                var assembly = System.Reflection.Assembly.GetEntryAssembly();
+                if (assembly != null)
+                {
+                    // Если есть иконка в ресурсах
+                    using var iconStream = assembly.GetManifestResourceStream("StickyNotes.Resources.app.ico");
+                    if (iconStream != null)
+                    {
+                        using var icon = new Icon(iconStream);
+                        _iconData.hIcon = icon.Handle;
+                        return;
+                    }
+                }
+
+                // Или из файла
+                string? exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
                 if (!string.IsNullOrEmpty(exePath) && System.IO.File.Exists(exePath))
                 {
                     var icon = Icon.ExtractAssociatedIcon(exePath);
@@ -132,7 +161,7 @@ namespace StickyNotes.Services
                     }
                 }
 
-                // Альтернативный способ - создать простую иконку
+                // Создаем простую иконку
                 CreateDefaultIcon();
             }
             catch (Exception ex)
@@ -149,24 +178,17 @@ namespace StickyNotes.Services
                 // Создаем простую желтую иконку 16x16
                 using var bitmap = new Bitmap(16, 16);
                 using var graphics = Graphics.FromImage(bitmap);
-                // Заливаем желтым цветом
-                graphics.Clear(Color.FromArgb(255, 255, 220, 120));
-
-                // Рисуем черную рамку
+                graphics.Clear(Color.Yellow);
                 graphics.DrawRectangle(Pens.Black, 0, 0, 15, 15);
 
-                // Рисуем букву "N" (Note)
-                using (var font = new Font(new FontFamily(System.Drawing.Text.GenericFontFamilies.Serif), 8, System.Drawing.FontStyle.Bold))
+                using (var font = new Font("Arial", 8, FontStyle.Bold))
                 using (var brush = new SolidBrush(Color.Black))
                 {
                     graphics.DrawString("N", font, brush, 3, 2);
                 }
 
-                // Получаем handle иконки
                 var icon = Icon.FromHandle(bitmap.GetHicon());
                 _iconData.hIcon = icon.Handle;
-
-                // Важно: не освобождаем ресурсы здесь, они понадобятся для иконки
             }
             catch (Exception ex)
             {
@@ -174,33 +196,6 @@ namespace StickyNotes.Services
                 _iconData.hIcon = IntPtr.Zero;
             }
         } // CreateDefaultIcon
-
-
-        public void ShowBalloonTip(string title, string message, int timeout = 1000)
-        {
-            if (!_iconAdded || _iconData.hWnd == IntPtr.Zero) return;
-
-            try
-            {
-                var notifyData = new NativeMethods.NOTIFYICONDATA
-                {
-                    cbSize = Marshal.SizeOf(typeof(NativeMethods.NOTIFYICONDATA)),
-                    hWnd = _iconData.hWnd,
-                    uID = _iconData.uID,
-                    uFlags = NativeMethods.NIF_INFO,
-                    szInfoTitle = title,
-                    szInfo = message,
-                    uTimeoutOrVersion = timeout,
-                    dwInfoFlags = 1 // NIIF_INFO
-                };
-
-                NativeMethods.Shell_NotifyIconInternal(NativeMethods.NIM_MODIFY, ref notifyData);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка показа уведомления: {ex.Message}");
-            }
-        } // ShowBalloonTip
 
         public void Dispose()
         {
@@ -214,10 +209,7 @@ namespace StickyNotes.Services
             {
                 if (disposing)
                 {
-                    // Отписываемся от событий
-                    _window.Loaded -= OnWindowLoaded;
-                    _window.SourceInitialized -= OnSourceInitialized;
-                    ComponentDispatcher.ThreadPreprocessMessage -= ComponentDispatcher_ThreadPreprocessMessage;
+                    // Управляемые ресурсы
                 }
 
                 // Удаляем иконку из трея
@@ -232,6 +224,9 @@ namespace StickyNotes.Services
                         System.Diagnostics.Debug.WriteLine($"Ошибка удаления иконки: {ex.Message}");
                     }
                 }
+
+                // Восстанавливаем оригинальную оконную процедуру
+                UnhookWindowProc();
 
                 // Освобождаем ресурсы иконки
                 if (_iconData.hIcon != IntPtr.Zero)
@@ -255,16 +250,4 @@ namespace StickyNotes.Services
             Dispose(false);
         } // ~TrayIconService
     } // TrayIconService
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct MSG
-    {
-        public IntPtr hwnd;
-        public int message;
-        public IntPtr wParam;
-        public IntPtr lParam;
-        public int time;
-        public int pt_x;
-        public int pt_y;
-    } // MSG
 } // namespace

@@ -39,9 +39,6 @@ namespace StickyNotes.ViewModels
             TogglePinCommand = new RelayCommand(TogglePin);
             SaveCommand = new RelayCommand(Save);
             CopyToClipboardCommand = new RelayCommand(CopyToClipboard);
-            MouseLeftButtonDownCommand = new RelayCommand<MouseButtonEventArgs>(OnMouseLeftButtonDown);
-            MouseMoveCommand = new RelayCommand<MouseEventArgs>(OnMouseMove);
-            MouseLeftButtonUpCommand = new RelayCommand<MouseButtonEventArgs>(OnMouseLeftButtonUp);
         } // InitializeCommands
 
         public string Text
@@ -56,7 +53,7 @@ namespace StickyNotes.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(Title));
                 }
-            }
+            } // set
         } // Text
 
         public string Title
@@ -94,10 +91,7 @@ namespace StickyNotes.ViewModels
         public ICommand TogglePinCommand { get; private set; } = null!;
         public ICommand SaveCommand { get; private set; } = null!;
         public ICommand CopyToClipboardCommand { get; private set; } = null!;
-        public ICommand MouseLeftButtonDownCommand { get; private set; } = null!;
-        public ICommand MouseMoveCommand { get; private set; } = null!;
-        public ICommand MouseLeftButtonUpCommand { get; private set; } = null!;
-
+        
         private void CloseWindow()
         {
             _window.Close();

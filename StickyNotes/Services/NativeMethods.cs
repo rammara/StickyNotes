@@ -2,8 +2,48 @@
 
 namespace StickyNotes.Services
 {
+    public delegate IntPtr WndProcDelegate(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
-   // [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1401:PInvokesShouldNotBeVisible")]
+
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct WNDCLASSEX
+    {
+        public int cbSize;
+        public int style;
+        public WndProcDelegate lpfnWndProc;
+        public int cbClsExtra;
+        public int cbWndExtra;
+        public IntPtr hInstance;
+        public IntPtr hIcon;
+        public IntPtr hCursor;
+        public IntPtr hbrBackground;
+        public string? lpszMenuName;
+        public string? lpszClassName;
+        public IntPtr hIconSm;
+    } // WNDCLASSEX
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct FLASHWINFO
+    {
+        public uint cbSize;
+        public IntPtr hwnd;
+        public uint dwFlags;
+        public uint uCount;
+        public uint dwTimeout;
+    } // FLASHWINFO
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KBDLLHOOKSTRUCT
+    {
+        public uint vkCode;
+        public uint scanCode;
+        public uint flags;
+        public uint time;
+        public IntPtr dwExtraInfo;
+    } // KBDLLHOOKSTRUCT
+
+    // [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "CA1401:PInvokesShouldNotBeVisible")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Interoperability", "SYSLIB1054:UseLibraryImportAttributeInsteadOfDllImportAttributeToGeneratePInvoke")]
     internal static class NativeMethods
     {
@@ -52,6 +92,9 @@ namespace StickyNotes.Services
         // Делегат для хука
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
+        public const int GWLP_WNDPROC = -4;
+
+
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
         public static IntPtr SetWindowsHookExInternal(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId) =>
@@ -68,8 +111,8 @@ namespace StickyNotes.Services
         public static IntPtr CallNextHookExInternal(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam) => CallNextHookEx(hhk, nCode, wParam, lParam);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-        public static IntPtr GetModuleHandleInternal(string lpModuleName) => GetModuleHandle(lpModuleName);
+        private static extern IntPtr GetModuleHandle(string? lpModuleName);
+        public static IntPtr GetModuleHandleInternal(string? lpModuleName) => GetModuleHandle(lpModuleName);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -96,5 +139,155 @@ namespace StickyNotes.Services
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem, uint uEnable);
         public static bool EnableMenuItemInternal(IntPtr hMenu, uint uIDEnableItem, uint uEnable) => EnableMenuItem(hMenu, uIDEnableItem, uEnable);
+
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        private static extern IntPtr CreateWindowEx(
+            int dwExStyle,
+            string lpClassName,
+            string lpWindowName,
+            int dwStyle,
+            int x,
+            int y,
+            int nWidth,
+            int nHeight,
+            IntPtr hWndParent,
+            IntPtr hMenu,
+            IntPtr hInstance,
+            IntPtr lpParam);
+        public static IntPtr CreateWindowExInternal(
+            int dwExStyle,
+            string lpClassName,
+            string lpWindowName,
+            int dwStyle,
+            int x,
+            int y,
+            int nWidth,
+            int nHeight,
+            IntPtr hWndParent,
+            IntPtr hMenu,
+            IntPtr hInstance,
+            IntPtr lpParam) =>
+                CreateWindowEx(
+                    dwExStyle,
+                    lpClassName, 
+                    lpWindowName, 
+                    dwStyle, 
+                    x,
+                    y,
+                    nWidth,
+                    nHeight,
+                    hWndParent,
+                    hMenu,
+                    hInstance,
+                    lpParam);
+        
+
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool DestroyWindow(IntPtr hWnd);
+        public static bool DestroyWindowInternal(IntPtr hWnd) => DestroyWindow(hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr DefWindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+        public static IntPtr DefWindowProcInternal(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam) =>
+            DefWindowProc(hWnd, msg, wParam, lParam);
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern ushort RegisterClassEx(ref WNDCLASSEX lpwcx);
+        public static ushort RegisterClassExInternal(ref WNDCLASSEX lpwcx) => RegisterClassEx(ref lpwcx);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+        public static IntPtr SetWindowLongPtrInternal(IntPtr hWnd, int nIndex, IntPtr dwNewLong) =>
+            SetWindowLongPtr(hWnd, nIndex, dwNewLong);
+
+        [DllImport("user32.dll")]
+        public static extern short GetKeyState(int nVirtKey);
+        public static short GetKeyStateInternal(int nVirtKey) => GetKeyState(nVirtKey);
+
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        public static IntPtr CallWindowProcInternal(IntPtr lpPrevWndFunc, IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam) =>
+            CallWindowProc(lpPrevWndFunc, hWnd, msg, wParam, lParam);
+
+        [DllImport("user32.dll")]
+        public static extern bool GetKeyboardState(byte[] lpKeyState);
+        public static bool GetKeyboardStateInternal(byte[] lpKeyState) => GetKeyboardState(lpKeyState);
+
+        [DllImport("user32.dll")]
+        public static extern short GetAsyncKeyState(int vKey);
+        public static short GetAsyncKeyStateInternal(int vKey) => GetAsyncKeyState(vKey);
+
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+        public static bool SetForegroundWindowInternal(IntPtr hWnd) => SetForegroundWindow(hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        public static bool ShowWindowInternal(IntPtr hWnd, int nCmdShow) => ShowWindow(hWnd, nCmdShow);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter,
+        int X, int Y, int cx, int cy, uint uFlags);
+        public static bool SetWindowPosInternal(IntPtr hWnd, IntPtr hWndInsertAfter,
+            int X, int Y, int cx, int cy, uint uFlags) =>
+            SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
+
+        public static bool FlashWindowExInternal(ref FLASHWINFO pwfi) => FlashWindowEx(ref pwfi);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsIconic(IntPtr hWnd);
+
+        public static bool IsIconicInternal(IntPtr hWnd) => IsIconic(hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        public static uint GetWindowThreadProcessIdInternal(IntPtr hWnd, out uint lpdwProcessId) =>
+            GetWindowThreadProcessId(hWnd, out lpdwProcessId);
+
+        [DllImport("kernel32.dll")]
+        private static extern uint GetCurrentThreadId();
+
+        public static uint GetCurrentThreadIdInternal() => GetCurrentThreadId();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        public static bool AttachThreadInputInternal(uint idAttach, uint idAttachTo, bool fAttach) =>
+            AttachThreadInput(idAttach, idAttachTo, fAttach);
+
+        // Константы для ShowWindow
+        public const int SW_RESTORE = 9;
+        public const int SW_SHOW = 5;
+        public const int SW_SHOWNA = 8;
+
+        // Константы для SetWindowPos
+        public static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+        public static readonly IntPtr HWND_NOTOPMOST = new IntPtr(-2);
+        public static readonly IntPtr HWND_TOP = new IntPtr(0);
+        public const uint SWP_NOSIZE = 0x0001;
+        public const uint SWP_NOMOVE = 0x0002;
+        public const uint SWP_NOACTIVATE = 0x0010;
+        public const uint SWP_SHOWWINDOW = 0x0040;
+
+        // Константы для FlashWindowEx
+        public const uint FLASHW_ALL = 0x00000003;
+        public const uint FLASHW_TIMERNOFG = 0x0000000C;
+        public const uint FLASHW_TRAY = 0x00000002;
+        public const uint FLASHW_STOP = 0;
+        public const uint FLASHW_CAPTION = 0x00000001;
     } // NativeMethods
 } // namespace

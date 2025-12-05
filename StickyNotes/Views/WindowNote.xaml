@@ -1,6 +1,7 @@
 ﻿<Window x:Class="StickyNotes.Views.WindowNote"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cnv="clr-namespace:StickyNotes.Converters"
         Title="{Binding Title}" 
         Height="300" Width="400"
         WindowStyle="None"
@@ -8,12 +9,31 @@
         Background="Transparent"
         ShowInTaskbar="True"
         ResizeMode="CanResizeWithGrip"
-        MouseLeftButtonDown="{Binding MouseLeftButtonDownCommand}"
-        MouseMove="{Binding MouseMoveCommand}"
-        MouseLeftButtonUp="{Binding MouseLeftButtonUpCommand}"
         KeyDown="Window_KeyDown">
 
     <Window.Resources>
+        <cnv:BoolToRotationConverter x:Key="BoolToRotationConverter" />
+
+        <!-- Конвертер для цвета иконки pin в нормальном состоянии -->
+        <cnv:BoolToColorConverter x:Key="PinNormalColorConverter"
+                                   TrueColor="#555555" 
+                                   FalseColor="#888888"/>
+
+        <!-- Конвертер для цвета иконки pin при наведении -->
+        <cnv:BoolToColorConverter x:Key="PinHoverColorConverter"
+                                   TrueColor="#333333" 
+                                   FalseColor="#666666"/>
+
+        <!-- Конвертер для цвета иконки pin при нажатии -->
+        <cnv:BoolToColorConverter x:Key="PinPressedColorConverter"
+                                   TrueColor="#222222" 
+                                   FalseColor="#444444"/>
+
+        <!-- Конвертер для цвета крестика -->
+        <cnv:StaticColorConverter x:Key="CloseNormalColorConverter" Color="#555555"/>
+        <cnv:StaticColorConverter x:Key="CloseHoverColorConverter" Color="#333333"/>
+        <cnv:StaticColorConverter x:Key="ClosePressedColorConverter" Color="#222222"/>
+
         <Style x:Key="ScrollBarThumbStyle" TargetType="Thumb">
             <Setter Property="Template">
                 <Setter.Value>
@@ -39,7 +59,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ScrollBar">
                         <Grid>
-                            <Track x:Name="PART_Track">
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
                                 <Track.Thumb>
                                     <Thumb Style="{StaticResource ScrollBarThumbStyle}"/>
                                 </Track.Thumb>
@@ -53,24 +73,104 @@
         <Style x:Key="WindowButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
                                 CornerRadius="3">
-                            <ContentPresenter HorizontalAlignment="Center" 
-                                              VerticalAlignment="Center"/>
+                            <ContentPresenter 
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Margin="0"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <!-- Убираем триггеры на фон кнопки -->
+        </Style>
+
+        <!-- Стиль для иконки pin -->
+        <Style x:Key="PinIconStyle" TargetType="Path">
+            <Setter Property="Fill" Value="Transparent"/>
+            <Setter Property="StrokeThickness" Value="2"/>
+            <Setter Property="StrokeLineJoin" Value="Round"/>
+            <Setter Property="StrokeStartLineCap" Value="Round"/>
+            <Setter Property="StrokeEndLineCap" Value="Round"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
             <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#F0F0F0"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="True">
-                    <Setter Property="Background" Value="#D0D0D0"/>
-                </Trigger>
+                <!-- Нормальное состояние -->
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsPinned}" Value="True"/>
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="False"/>
+                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#555555"/>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsPinned}" Value="False"/>
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="False"/>
+                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#888888"/>
+                </MultiDataTrigger>
+
+                <!-- Состояние наведения -->
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsPinned}" Value="True"/>
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True"/>
+                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#333333"/>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsPinned}" Value="False"/>
+                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True"/>
+                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="False"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#666666"/>
+                </MultiDataTrigger>
+
+                <!-- Состояние нажатия -->
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsPinned}" Value="True"/>
+                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#222222"/>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsPinned}" Value="False"/>
+                        <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Stroke" Value="#444444"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для иконки закрытия -->
+        <Style x:Key="CloseIconStyle" TargetType="Path">
+            <Setter Property="StrokeThickness" Value="1.6"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Stroke" Value="#555555"/>
+            <Style.Triggers>
+                <!-- Состояние наведения -->
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                    <Setter Property="Stroke" Value="#333333"/>
+                </DataTrigger>
+                <!-- Состояние нажатия -->
+                <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                    <Setter Property="Stroke" Value="#222222"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
@@ -78,7 +178,6 @@
     <Grid>
         <Border Background="#FFFACD" 
                 CornerRadius="5" 
-                BorderThickness="1" 
                 BorderBrush="#FFD700">
 
             <Grid>
@@ -92,7 +191,7 @@
                         Height="30" 
                         Background="#FFEB3B"
                         CornerRadius="5,5,0,0"
-                        MouseLeftButtonDown="{Binding MouseLeftButtonDownCommand}">
+                        MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
 
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -114,62 +213,57 @@
                                 Margin="5,0"
                                 Command="{Binding TogglePinCommand}"
                                 Style="{StaticResource WindowButtonStyle}">
-                            <Path Data="M5,5 L15,5 L15,15 L5,15 Z" 
-                                  Stroke="Gray" 
-                                  StrokeThickness="2">
-                                <Path.Style>
-                                    <Style TargetType="Path">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPinned}" Value="True">
-                                                <Setter Property="Fill" Value="Green"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsPinned}" Value="False">
-                                                <Setter Property="Fill" Value="Transparent"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Path.Style>
-                            </Path>
+                            <Grid Width="16" Height="16">
+                                <Viewbox Stretch="Uniform">
+                                    <Path Data="M12,17 L12,22 M9,10.76 A2,2,0,0,1,7.89,12.55 L6.11,13.45 A2,2,0,0,0,5,15.24 L5,16 A1,1,0,0,0,6,17 L18,17 A1,1,0,0,0,19,16 L19,15.24 A2,2,0,0,0,17.89,13.45 L16.11,12.55 A2,2,0,0,1,15,10.76 L15,7 A1,1,0,0,1,16,6 A2,2,0,0,0,16,2 L8,2 A2,2,0,0,0,8,6 A1,1,0,0,1,9,7 L9,10.76 Z"
+                                          Style="{StaticResource PinIconStyle}">
+                                        <Path.RenderTransform>
+                                            <RotateTransform Angle="{Binding IsPinned, Converter={StaticResource BoolToRotationConverter}}"
+                                                             CenterX="12" CenterY="12"/>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Viewbox>
+                            </Grid>
                         </Button>
 
                         <!-- Кнопка закрытия -->
-                        <Button Grid.Column="2" 
+                        <Button Grid.Column="2"
                                 Width="20" 
                                 Height="20" 
                                 Margin="5,0,10,0"
                                 Command="{Binding CloseCommand}"
                                 Style="{StaticResource WindowButtonStyle}">
-                            <Path Data="M5,5 L15,15 M15,5 L5,15" 
-                                  Stroke="DarkGray" 
-                                  StrokeThickness="2"/>
+                            <Grid Width="16" Height="16">
+                                <Viewbox Stretch="Uniform">
+                                    <Path Data="M2,2 L12,12 M12,2 L2,12"
+                                          Style="{StaticResource CloseIconStyle}"/>
+                                </Viewbox>
+                            </Grid>
                         </Button>
                     </Grid>
                 </Border>
 
-                <!-- Текстовое поле -->
-                <ScrollViewer Grid.Row="1" 
-                              VerticalScrollBarVisibility="Auto"
-                              HorizontalScrollBarVisibility="Auto">
-                    <ScrollViewer.Resources>
-                        <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBar}"/>
-                    </ScrollViewer.Resources>
-
-                    <TextBox x:Name="NoteTextBox"
+                <!-- Текстовое поле с правильной прокруткой -->
+                <TextBox Grid.Row="1"
+                         x:Name="NoteTextBox"
                          Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
                          Background="Transparent"
                          BorderThickness="0"
                          AcceptsReturn="True"
                          AcceptsTab="True"
                          TextWrapping="Wrap"
-                         VerticalScrollBarVisibility="Hidden"
-                         HorizontalScrollBarVisibility="Hidden"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
                          FontFamily="{Binding FontFamily}"
                          FontSize="{Binding FontSize}"
                          FontWeight="{Binding FontWeight}"
                          FontStyle="{Binding FontStyle}"
                          VerticalContentAlignment="Top"
-                         Padding="10"/>
-                </ScrollViewer>
+                         Padding="10">
+                    <TextBox.Resources>
+                        <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBar}"/>
+                    </TextBox.Resources>
+                </TextBox>
             </Grid>
         </Border>
 

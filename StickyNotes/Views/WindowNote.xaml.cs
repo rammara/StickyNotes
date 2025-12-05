@@ -6,6 +6,13 @@ namespace StickyNotes.Views
 {
     public partial class WindowNote : Window
     {
+        private const int ResizeBorderThickness = 6;
+        private bool _isResizing = false;
+        private WindowResizeEdge _resizeEdge;
+        private Point _resizeStartPoint;
+        private bool _isDragging = false;
+        private Point _dragStartPoint;
+
         public WindowNote()
         {
             InitializeComponent();
@@ -17,42 +24,70 @@ namespace StickyNotes.Views
             NoteTextBox.Focus();
         } // OnLoaded
 
-        protected override void OnLocationChanged(System.EventArgs e)
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is FrameworkElement element && IsInTitleBar(element))
+            {
+                _isDragging = true;
+                _dragStartPoint = e.GetPosition(this);
+                CaptureMouse();
+                e.Handled = true;
+            }
+        } // TitleBar_MouseLeftButtonDown
+
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonUp(e);
+
+            if (_isDragging)
+            {
+                _isDragging = false;
+                ReleaseMouseCapture();
+                SaveWindowPosition();
+            }
+
+            if (_isResizing)
+            {
+                _isResizing = false;
+                ReleaseMouseCapture();
+                SaveWindowPosition();
+            }
+        } // OnMouseLeftButtonUp
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            if (_isDragging && e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point currentPosition = e.GetPosition(this);
+                Vector offset = currentPosition - _dragStartPoint;
+
+                Left += offset.X;
+                Top += offset.Y;
+            }
+            else if (_isResizing && e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point currentPosition = e.GetPosition(this);
+                HandleResize(currentPosition);
+            }
+            else
+            {
+                UpdateCursor(e.GetPosition(this));
+            }
+        } // OnMouseMove
+
+        protected override void OnLocationChanged(EventArgs e)
         {
             base.OnLocationChanged(e);
-            var viewModel = DataContext as ViewModels.WindowNoteViewModel;
-            viewModel?.SaveWindowPosition();
+            SaveWindowPosition();
         } // OnLocationChanged
 
         protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
         {
             base.OnRenderSizeChanged(sizeInfo);
-            var viewModel = DataContext as ViewModels.WindowNoteViewModel;
-            viewModel?.SaveWindowPosition();
+            SaveWindowPosition();
         } // OnRenderSizeChanged
-
-        // Обновим метод Window_KeyDown в WindowNote.xaml.cs
-        private void Window_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (DataContext is not ViewModels.WindowNoteViewModel viewModel) return;
-
-            var mainViewModel = Application.Current.MainWindow?.DataContext as ViewModels.MainViewModel;
-
-            // Ctrl+C или Ctrl+Insert - копировать весь текст
-            if ((e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control) ||
-                (e.Key == Key.Insert && Keyboard.Modifiers == ModifierKeys.Control))
-            {
-                viewModel.CopyToClipboardCommand.Execute(null);
-                e.Handled = true;
-            }
-            // Ctrl+S или F2 - сохранить
-            else if ((e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control) ||
-                     (mainViewModel != null && mainViewModel.IsSaveHotkeyPressed(e)))
-            {
-                viewModel.SaveCommand.Execute(null);
-                e.Handled = true;
-            }
-        } // Window_KeyDown
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
         {
@@ -61,28 +96,114 @@ namespace StickyNotes.Views
             var point = e.GetPosition(this);
 
             // Проверяем, находится ли курсор в зоне ресайза
-            if (point.X <= ResizeBorderThickness || point.X >= ActualWidth - ResizeBorderThickness ||
-                point.Y <= ResizeBorderThickness || point.Y >= ActualHeight - ResizeBorderThickness)
+            if (IsInResizeZone(point))
             {
-                // Начинаем изменение размера
-                if (point.X <= ResizeBorderThickness && point.Y <= ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.TopLeft);
-                else if (point.X >= ActualWidth - ResizeBorderThickness && point.Y <= ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.TopRight);
-                else if (point.X <= ResizeBorderThickness && point.Y >= ActualHeight - ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.BottomLeft);
-                else if (point.X >= ActualWidth - ResizeBorderThickness && point.Y >= ActualHeight - ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.BottomRight);
-                else if (point.X <= ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.Left);
-                else if (point.X >= ActualWidth - ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.Right);
-                else if (point.Y <= ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.Top);
-                else if (point.Y >= ActualHeight - ResizeBorderThickness)
-                    DragResize(WindowResizeEdge.Bottom);
+                _isResizing = true;
+                _resizeStartPoint = point;
+                _resizeEdge = GetResizeEdge(point);
+                CaptureMouse();
+                e.Handled = true;
             }
         } // OnMouseLeftButtonDown
+
+        private bool IsInResizeZone(Point point)
+        {
+            return point.X <= ResizeBorderThickness ||
+                   point.X >= ActualWidth - ResizeBorderThickness ||
+                   point.Y <= ResizeBorderThickness ||
+                   point.Y >= ActualHeight - ResizeBorderThickness;
+        } // IsInResizeZone
+
+        private WindowResizeEdge GetResizeEdge(Point point)
+        {
+            if (point.X <= ResizeBorderThickness)
+            {
+                if (point.Y <= ResizeBorderThickness) return WindowResizeEdge.TopLeft;
+                if (point.Y >= ActualHeight - ResizeBorderThickness) return WindowResizeEdge.BottomLeft;
+                return WindowResizeEdge.Left;
+            }
+
+            if (point.X >= ActualWidth - ResizeBorderThickness)
+            {
+                if (point.Y <= ResizeBorderThickness) return WindowResizeEdge.TopRight;
+                if (point.Y >= ActualHeight - ResizeBorderThickness) return WindowResizeEdge.BottomRight;
+                return WindowResizeEdge.Right;
+            }
+
+            if (point.Y <= ResizeBorderThickness) return WindowResizeEdge.Top;
+            return WindowResizeEdge.Bottom;
+        } // GetResizeEdge
+
+        private void HandleResize(Point currentPosition)
+        {
+            double deltaX = currentPosition.X - _resizeStartPoint.X;
+            double deltaY = currentPosition.Y - _resizeStartPoint.Y;
+
+            switch (_resizeEdge)
+            {
+                case WindowResizeEdge.Left:
+                    Left += deltaX;
+                    Width = Math.Max(MinWidth, Width - deltaX);
+                    break;
+                case WindowResizeEdge.Right:
+                    Width = Math.Max(MinWidth, Width + deltaX);
+                    break;
+                case WindowResizeEdge.Top:
+                    Top += deltaY;
+                    Height = Math.Max(MinHeight, Height - deltaY);
+                    break;
+                case WindowResizeEdge.Bottom:
+                    Height = Math.Max(MinHeight, Height + deltaY);
+                    break;
+                case WindowResizeEdge.TopLeft:
+                    Left += deltaX;
+                    Top += deltaY;
+                    Width = Math.Max(MinWidth, Width - deltaX);
+                    Height = Math.Max(MinHeight, Height - deltaY);
+                    break;
+                case WindowResizeEdge.TopRight:
+                    Top += deltaY;
+                    Width = Math.Max(MinWidth, Width + deltaX);
+                    Height = Math.Max(MinHeight, Height - deltaY);
+                    break;
+                case WindowResizeEdge.BottomLeft:
+                    Left += deltaX;
+                    Width = Math.Max(MinWidth, Width - deltaX);
+                    Height = Math.Max(MinHeight, Height + deltaY);
+                    break;
+                case WindowResizeEdge.BottomRight:
+                    Width = Math.Max(MinWidth, Width + deltaX);
+                    Height = Math.Max(MinHeight, Height + deltaY);
+                    break;
+            }
+
+            _resizeStartPoint = currentPosition;
+        } // HandleResize
+
+        private void UpdateCursor(Point point)
+        {
+            if (IsInResizeZone(point))
+            {
+                var edge = GetResizeEdge(point);
+                Cursor = GetCursorForEdge(edge);
+            }
+            else
+            {
+                Cursor = Cursors.Arrow;
+            }
+        } // UpdateCursor
+
+        private static Cursor GetCursorForEdge(WindowResizeEdge edge)
+        {
+            return edge switch
+            {
+                WindowResizeEdge.Left or WindowResizeEdge.Right => Cursors.SizeWE,
+                WindowResizeEdge.Top or WindowResizeEdge.Bottom => Cursors.SizeNS,
+                WindowResizeEdge.TopLeft or WindowResizeEdge.BottomRight => Cursors.SizeNWSE,
+                WindowResizeEdge.TopRight or WindowResizeEdge.BottomLeft => Cursors.SizeNESW,
+                _ => Cursors.Arrow
+            };
+        } // GetCursorForEdge
 
         private static bool IsInTitleBar(FrameworkElement element)
         {
@@ -102,40 +223,31 @@ namespace StickyNotes.Views
             return false;
         } // IsInTitleBar
 
-        // В WindowNote.xaml.cs добавим методы для ресайза
-        private const int ResizeBorderThickness = 6;
-
-        protected override void OnMouseMove(MouseEventArgs e)
+        private void SaveWindowPosition()
         {
-            base.OnMouseMove(e);
+            var viewModel = DataContext as ViewModels.WindowNoteViewModel;
+            viewModel?.SaveWindowPosition();
+        } // SaveWindowPosition
 
-            // Определяем курсор для изменения размера
-            var point = e.GetPosition(this);
-            var cursor = Cursors.Arrow;
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (DataContext is not ViewModels.WindowNoteViewModel viewModel) return;
 
-            if (point.X <= ResizeBorderThickness)
+            // Ctrl+C или Ctrl+Insert - копировать весь текст
+            if ((e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control) ||
+                (e.Key == Key.Insert && Keyboard.Modifiers == ModifierKeys.Control))
             {
-                cursor = point.Y <= ResizeBorderThickness ? Cursors.SizeNWSE :
-                         point.Y >= ActualHeight - ResizeBorderThickness ? Cursors.SizeNESW :
-                         Cursors.SizeWE;
+                viewModel.CopyToClipboardCommand.Execute(null);
+                e.Handled = true;
             }
-            else if (point.X >= ActualWidth - ResizeBorderThickness)
+            // Ctrl+S или F2 - сохранить
+            else if ((e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control) ||
+                     e.Key == Key.F2)
             {
-                cursor = point.Y <= ResizeBorderThickness ? Cursors.SizeNESW :
-                         point.Y >= ActualHeight - ResizeBorderThickness ? Cursors.SizeNWSE :
-                         Cursors.SizeWE;
+                viewModel.SaveCommand.Execute(null);
+                e.Handled = true;
             }
-            else if (point.Y <= ResizeBorderThickness)
-            {
-                cursor = Cursors.SizeNS;
-            }
-            else if (point.Y >= ActualHeight - ResizeBorderThickness)
-            {
-                cursor = Cursors.SizeNS;
-            }
-
-            Cursor = cursor;
-        } // OnMouseMove
+        } // Window_KeyDown
 
         private enum WindowResizeEdge
         {
@@ -148,89 +260,5 @@ namespace StickyNotes.Views
             BottomLeft,
             BottomRight
         } // WindowResizeEdge
-
-        private void DragResize(WindowResizeEdge edge)
-        {
-            // Используем Win32 API для изменения размера
-            var wpfPoint = Mouse.GetPosition(this);
-            var screenPoint = PointToScreen(wpfPoint);
-
-            switch (edge)
-            {
-                case WindowResizeEdge.Left:
-                    ResizeWindow(screenPoint.X, 0, 0, 0);
-                    break;
-                case WindowResizeEdge.Right:
-                    ResizeWindow(0, 0, screenPoint.X, 0);
-                    break;
-                case WindowResizeEdge.Top:
-                    ResizeWindow(0, screenPoint.Y, 0, 0);
-                    break;
-                case WindowResizeEdge.Bottom:
-                    ResizeWindow(0, 0, 0, screenPoint.Y);
-                    break;
-                case WindowResizeEdge.TopLeft:
-                    ResizeWindow(screenPoint.X, screenPoint.Y, 0, 0);
-                    break;
-                case WindowResizeEdge.TopRight:
-                    ResizeWindow(0, screenPoint.Y, screenPoint.X, 0);
-                    break;
-                case WindowResizeEdge.BottomLeft:
-                    ResizeWindow(screenPoint.X, 0, 0, screenPoint.Y);
-                    break;
-                case WindowResizeEdge.BottomRight:
-                    ResizeWindow(0, 0, screenPoint.X, screenPoint.Y);
-                    break;
-            }
-        } // DragResize
-
-        private void ResizeWindow(double left, double top, double right, double bottom)
-        {
-            // Сохраняем текущие значения
-            var currentLeft = Left;
-            var currentTop = Top;
-            var currentWidth = Width;
-            var currentHeight = Height;
-
-            // Изменяем размеры
-            if (left > 0)
-            {
-                var newWidth = currentWidth + (currentLeft - left);
-                if (newWidth > MinWidth)
-                {
-                    Left = left;
-                    Width = newWidth;
-                }
-            }
-
-            if (top > 0)
-            {
-                var newHeight = currentHeight + (currentTop - top);
-                if (newHeight > MinHeight)
-                {
-                    Top = top;
-                    Height = newHeight;
-                }
-            }
-
-            if (right > 0)
-            {
-                var newWidth = right - Left;
-                if (newWidth > MinWidth)
-                    Width = newWidth;
-            }
-
-            if (bottom > 0)
-            {
-                var newHeight = bottom - Top;
-                if (newHeight > MinHeight)
-                    Height = newHeight;
-            }
-
-            // Сохраняем позицию
-            var viewModel = DataContext as ViewModels.WindowNoteViewModel;
-            viewModel?.SaveWindowPosition();
-        } // ResizeWindow
-
     } // WindowNote
 } // namespace

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Drawing;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 
 namespace StickyNotes.Converters
 {
@@ -33,4 +30,4 @@ namespace StickyNotes.Converters
             throw new NotImplementedException();
         } // ConvertBack
     } // FontSettingsConverter
-}
+} // namespace
