@@ -1,4 +1,5 @@
-﻿using StickyNotes.ViewModels;
+﻿using StickyNotes.Services;
+using StickyNotes.ViewModels;
 using System.Windows;
 
 namespace StickyNotes
@@ -10,8 +11,10 @@ namespace StickyNotes
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            ServiceProvider.RegisterService(new SettingsService());
+            ServiceProvider.RegisterService(new GlobalHookService());
             _mainViewModel = new MainViewModel();
-            // Запускаем приложение в фоновом режиме
+            // Background mode
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
         } // OnStartup
 

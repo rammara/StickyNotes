@@ -4,9 +4,9 @@
         Title="Select Hotkey Combination" 
         Height="200" 
         Width="400"
-        WindowStartupLocation="CenterOwner"
+        WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        KeyDown="{Binding KeyDownCommand}">
+        PreviewKeyDown="Window_PreviewKeyDown" Icon="/Icons/Childish-Note_24983.png" >
 
     <Grid Margin="20">
         <Grid.RowDefinitions>
@@ -51,8 +51,15 @@
                     Width="80" 
                     Margin="0,0,10,0"
                     Padding="10,5"/>
+            <Button Content="Reset" 
+                    Command="{Binding ResetCommand}" 
+                    IsEnabled="{Binding ComboSelected}"
+                    Width="80" 
+                    Margin="0,0,10,0"
+                    Padding="10,5"/>
             <Button Content="Set" 
                     Command="{Binding SetCommand}" 
+                    IsEnabled="{Binding ComboSelected}"
                     Width="80"
                     Padding="10,5"
                     Background="#4CAF50"

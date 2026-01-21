@@ -9,27 +9,27 @@
         Background="Transparent"
         ShowInTaskbar="True"
         ResizeMode="CanResizeWithGrip"
-        KeyDown="Window_KeyDown">
+        KeyDown="Window_KeyDown" Icon="/Icons/Childish-Note_24983.png">
 
     <Window.Resources>
         <cnv:BoolToRotationConverter x:Key="BoolToRotationConverter" />
 
-        <!-- Конвертер для цвета иконки pin в нормальном состоянии -->
+        <!-- Pin icon for normal state -->
         <cnv:BoolToColorConverter x:Key="PinNormalColorConverter"
                                    TrueColor="#555555" 
                                    FalseColor="#888888"/>
 
-        <!-- Конвертер для цвета иконки pin при наведении -->
+        <!-- Pin icon for hovered state -->
         <cnv:BoolToColorConverter x:Key="PinHoverColorConverter"
                                    TrueColor="#333333" 
                                    FalseColor="#666666"/>
 
-        <!-- Конвертер для цвета иконки pin при нажатии -->
+        <!-- Pin icon color for pressed state -->
         <cnv:BoolToColorConverter x:Key="PinPressedColorConverter"
                                    TrueColor="#222222" 
                                    FalseColor="#444444"/>
 
-        <!-- Конвертер для цвета крестика -->
+        <!-- Close icon color  -->
         <cnv:StaticColorConverter x:Key="CloseNormalColorConverter" Color="#555555"/>
         <cnv:StaticColorConverter x:Key="CloseHoverColorConverter" Color="#333333"/>
         <cnv:StaticColorConverter x:Key="ClosePressedColorConverter" Color="#222222"/>
@@ -89,10 +89,9 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <!-- Убираем триггеры на фон кнопки -->
         </Style>
 
-        <!-- Стиль для иконки pin -->
+        <!-- Pin button style -->
         <Style x:Key="PinIconStyle" TargetType="Path">
             <Setter Property="Fill" Value="Transparent"/>
             <Setter Property="StrokeThickness" Value="2"/>
@@ -102,7 +101,7 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Style.Triggers>
-                <!-- Нормальное состояние -->
+                <!-- Normal state -->
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsPinned}" Value="True"/>
@@ -120,7 +119,7 @@
                     <Setter Property="Stroke" Value="#888888"/>
                 </MultiDataTrigger>
 
-                <!-- Состояние наведения -->
+                <!-- Hovered state -->
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsPinned}" Value="True"/>
@@ -138,7 +137,7 @@
                     <Setter Property="Stroke" Value="#666666"/>
                 </MultiDataTrigger>
 
-                <!-- Состояние нажатия -->
+                <!-- Pressed state -->
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsPinned}" Value="True"/>
@@ -156,18 +155,18 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Стиль для иконки закрытия -->
+        <!-- Close Icon style -->
         <Style x:Key="CloseIconStyle" TargetType="Path">
             <Setter Property="StrokeThickness" Value="1.6"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Stroke" Value="#555555"/>
             <Style.Triggers>
-                <!-- Состояние наведения -->
+                <!-- Hovered style -->
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
                     <Setter Property="Stroke" Value="#333333"/>
                 </DataTrigger>
-                <!-- Состояние нажатия -->
+                <!-- Pressed style -->
                 <DataTrigger Binding="{Binding IsPressed, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
                     <Setter Property="Stroke" Value="#222222"/>
                 </DataTrigger>
@@ -186,7 +185,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <!-- Заголовок окна -->
+                <!-- Window title -->
                 <Border x:Name="TitleBar" Grid.Row="0" 
                         Height="30" 
                         Background="#FFEB3B"
@@ -206,7 +205,7 @@
                                    Margin="10,0"
                                    FontWeight="SemiBold"/>
 
-                        <!-- Кнопка Pin -->
+                        <!-- Pin button -->
                         <Button Grid.Column="1" 
                                 Width="20" 
                                 Height="20" 
@@ -226,7 +225,7 @@
                             </Grid>
                         </Button>
 
-                        <!-- Кнопка закрытия -->
+                        <!-- Close button -->
                         <Button Grid.Column="2"
                                 Width="20" 
                                 Height="20" 
@@ -243,7 +242,7 @@
                     </Grid>
                 </Border>
 
-                <!-- Текстовое поле с правильной прокруткой -->
+                <!-- Scrollable TextBox -->
                 <TextBox Grid.Row="1"
                          x:Name="NoteTextBox"
                          Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
@@ -267,7 +266,7 @@
             </Grid>
         </Border>
 
-        <!-- Ресайз грип -->
+        <!-- Resize grip -->
         <Path Data="M0,20 L20,20 L20,0" 
               Stroke="DarkGray" 
               StrokeThickness="1"

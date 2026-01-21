@@ -9,7 +9,7 @@ namespace StickyNotes.Converters
         {
             if (value is bool isPinned)
             {
-                return isPinned ? 0 : 45; // 0° для прикрепленного, 45° для открепленного
+                return isPinned ? 0 : 45; // 0° for pinned, 45° for unpinned
             }
             return 0;
         } // Convert

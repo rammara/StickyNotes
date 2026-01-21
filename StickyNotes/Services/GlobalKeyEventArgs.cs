@@ -1,5 +1,4 @@
-﻿// Класс аргументов для глобальных событий клавиатуры
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace StickyNotes.Services
 {
@@ -11,4 +10,4 @@ namespace StickyNotes.Services
         public bool AltPressed { get; } = altPressed;
         public bool WinPressed { get; } = winPresed;
     } // GlobalKeyEventArgs
-}
+} // namespace

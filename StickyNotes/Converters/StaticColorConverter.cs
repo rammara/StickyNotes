@@ -16,5 +16,5 @@ namespace StickyNotes.Converters
         {
             throw new NotImplementedException();
         }
-    }
-}
+    } // class StaticColorConverter
+} // namespace

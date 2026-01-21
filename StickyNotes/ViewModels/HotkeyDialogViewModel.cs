@@ -1,6 +1,6 @@
-﻿using System;
+﻿using StickyNotes.Models;
+using System.Windows;
 using System.Windows.Input;
-using StickyNotes.Models;
 
 namespace StickyNotes.ViewModels
 {
@@ -8,15 +8,39 @@ namespace StickyNotes.ViewModels
     {
         private Hotkey _selectedHotkey = new();
 
-        public HotkeyDialogViewModel()
+        private readonly Window _window;
+
+        public HotkeyDialogViewModel(Window window)
         {
+            ArgumentNullException.ThrowIfNull(window);
+            _window = window;
             InitializeCommands();
-        } // HotkeyDialogViewModel
+        } // SetWindow
+
+        private void SetHotkey()
+        {
+            _window.DialogResult = true;
+            _window?.Close();
+        } // SetHotkey
+
+        private void Cancel()
+        {
+            _window.DialogResult = false;
+            _window.Close();
+        } // Cancel
+
+        private void Reset()
+        {
+            _selectedHotkey = new();
+            ComboSelected = false;
+            OnPropertyChanged(nameof(HotkeyDisplay));
+        } // Reset
 
         private void InitializeCommands()
         {
             SetCommand = new RelayCommand(SetHotkey);
             CancelCommand = new RelayCommand(Cancel);
+            ResetCommand = new RelayCommand(Reset);
             KeyDownCommand = new RelayCommand<KeyEventArgs>(OnKeyDown);
         } // InitializeCommands
 
@@ -26,7 +50,6 @@ namespace StickyNotes.ViewModels
             set
             {
                 _selectedHotkey = value;
-                OnPropertyChanged();
                 OnPropertyChanged(nameof(HotkeyDisplay));
             }
         } // SelectedHotkey
@@ -34,49 +57,40 @@ namespace StickyNotes.ViewModels
         public string HotkeyDisplay => _selectedHotkey.ToString();
 
         public ICommand SetCommand { get; private set; } = null!;
+        public ICommand ResetCommand { get; private set; } = null;
         public ICommand CancelCommand { get; private set; } = null!;
         public ICommand KeyDownCommand { get; private set; } = null!;
 
-        private void SetHotkey()
-        {
-            // Закрываем окно с DialogResult = true
-            if (System.Windows.Application.Current.Windows.Count > 0)
-            {
-                foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
+        private bool _comboSelected = false;
+        public bool ComboSelected 
+        { 
+            get => _comboSelected;
+            set {
+                if (value != _comboSelected)
                 {
-                    if (window.DataContext == this)
-                    {
-                        window.DialogResult = true;
-                        break;
-                    }
+                    _comboSelected = value;
+                    OnPropertyChanged(nameof(ComboSelected));
                 }
             }
-        } // SetHotkey
+        } // ComboSelected
 
-        private void Cancel()
+        public void OnKeyDown(KeyEventArgs e)
         {
-            // Закрываем окно с DialogResult = false
-            if (System.Windows.Application.Current.Windows.Count > 0)
-            {
-                foreach (System.Windows.Window window in System.Windows.Application.Current.Windows)
-                {
-                    if (window.DataContext == this)
-                    {
-                        window.DialogResult = false;
-                        break;
-                    }
-                }
-            }
-        } // Cancel
-
-        private void OnKeyDown(KeyEventArgs e)
-        {
+            
             // Игнорируем системные клавиши
             if (e.Key == Key.System || e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl ||
                 e.Key == Key.LeftShift || e.Key == Key.RightShift ||
                 e.Key == Key.LeftAlt || e.Key == Key.RightAlt ||
                 e.Key == Key.LWin || e.Key == Key.RWin)
             {
+                return;
+            }
+
+            if (ComboSelected)
+            {
+                if (Keyboard.IsKeyDown(Key.Return)) SetHotkey();
+                if (Keyboard.IsKeyDown(Key.Escape)) Cancel();
+                e.Handled = true;
                 return;
             }
 
@@ -99,7 +113,10 @@ namespace StickyNotes.ViewModels
                 Modifiers = modifiers
             };
 
+            ComboSelected = true;
+
             e.Handled = true;
-        } // OnKeyDown
+        }
+        // OnKeyDown
     } // HotkeyDialogViewModel
 }

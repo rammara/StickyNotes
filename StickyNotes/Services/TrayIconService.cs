@@ -1,7 +1,6 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Interop;
 
 namespace StickyNotes.Services
 {
@@ -49,7 +48,7 @@ namespace StickyNotes.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка инициализации TrayIconService: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error initializing the TrayIconService: {ex.Message}");
                 throw;
             }
         } // Initialize
@@ -115,87 +114,52 @@ namespace StickyNotes.Services
                 if (success)
                 {
                     _iconAdded = true;
-                    System.Diagnostics.Debug.WriteLine("Иконка успешно добавлена в трей");
+                    System.Diagnostics.Debug.WriteLine("Icon successfully added to the system tray.");
                 }
                 else
                 {
                     int error = Marshal.GetLastWin32Error();
-                    System.Diagnostics.Debug.WriteLine($"Ошибка добавления иконки: {error}");
+                    System.Diagnostics.Debug.WriteLine($"Error adding the icon to the system tray: {error}");
                     throw new InvalidOperationException($"Failed to add tray icon. Error code: {error}");
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка при добавлении иконки: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error while adding the icon: {ex.Message}");
                 throw;
             }
         } // AddTrayIcon
 
+        const int iconSize = 32;
         private void LoadIcon()
         {
             try
             {
-                // Пытаемся загрузить иконку из ресурсов
                 var assembly = System.Reflection.Assembly.GetEntryAssembly();
                 if (assembly != null)
                 {
-                    // Если есть иконка в ресурсах
-                    using var iconStream = assembly.GetManifestResourceStream("StickyNotes.Resources.app.ico");
-                    if (iconStream != null)
+                    var iconBytes = Properties.Resources.Note_Icon;
+                    using var ms = new MemoryStream(iconBytes);
+                    using var originalIcon = new Icon(ms);
+                    using var bitmap = new Bitmap(iconSize, iconSize);
+                    using (var g = Graphics.FromImage(bitmap))
                     {
-                        using var icon = new Icon(iconStream);
-                        _iconData.hIcon = icon.Handle;
-                        return;
+                        g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        g.DrawIcon(originalIcon, new Rectangle(0, 0, iconSize, iconSize));
                     }
-                }
 
-                // Или из файла
-                string? exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                if (!string.IsNullOrEmpty(exePath) && System.IO.File.Exists(exePath))
-                {
-                    var icon = Icon.ExtractAssociatedIcon(exePath);
-                    if (icon != null)
-                    {
-                        _iconData.hIcon = icon.Handle;
-                        return;
-                    }
+                    IntPtr hIcon = bitmap.GetHicon();
+                    _iconData.hIcon = hIcon;
+                    return;
                 }
-
-                // Создаем простую иконку
-                CreateDefaultIcon();
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка загрузки иконки: {ex.Message}");
-                CreateDefaultIcon();
+                System.Diagnostics.Debug.WriteLine($"Error loading icon: {ex.Message}");
             }
         } // LoadIcon
 
-        private void CreateDefaultIcon()
-        {
-            try
-            {
-                // Создаем простую желтую иконку 16x16
-                using var bitmap = new Bitmap(16, 16);
-                using var graphics = Graphics.FromImage(bitmap);
-                graphics.Clear(Color.Yellow);
-                graphics.DrawRectangle(Pens.Black, 0, 0, 15, 15);
-
-                using (var font = new Font("Arial", 8, FontStyle.Bold))
-                using (var brush = new SolidBrush(Color.Black))
-                {
-                    graphics.DrawString("N", font, brush, 3, 2);
-                }
-
-                var icon = Icon.FromHandle(bitmap.GetHicon());
-                _iconData.hIcon = icon.Handle;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Ошибка создания иконки: {ex.Message}");
-                _iconData.hIcon = IntPtr.Zero;
-            }
-        } // CreateDefaultIcon
+      
 
         public void Dispose()
         {
@@ -221,7 +185,7 @@ namespace StickyNotes.Services
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Ошибка удаления иконки: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Error deleting the icon: {ex.Message}");
                     }
                 }
 
@@ -237,7 +201,7 @@ namespace StickyNotes.Services
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Ошибка освобождения иконки: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Error releasing the icon: {ex.Message}");
                     }
                 }
 

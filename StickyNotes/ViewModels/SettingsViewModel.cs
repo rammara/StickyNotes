@@ -10,14 +10,14 @@ namespace StickyNotes.ViewModels
     {
         private readonly SettingsService _settingsService;
         private readonly SettingsModel _settings;
-        private HotkeyDialog? _hotkeyDialog;
+        private readonly SettingsWindow _window;
+        //private HotkeyDialog? _hotkeyDialog;
 
-        // Обновим конструктор SettingsViewModel для инициализации свойств шрифта
-        public SettingsViewModel(SettingsService settingsService)
+        public SettingsViewModel(SettingsWindow window)
         {
-            _settingsService = settingsService;
+            _settingsService = ServiceProvider.GetRequiredService<SettingsService>();
             _settings = _settingsService.LoadSettings();
-
+            _window = window;
             InitializeCommands();
             UpdateFontProperties();
         } // SettingsViewModel
@@ -80,18 +80,7 @@ namespace StickyNotes.ViewModels
 
         private void Cancel()
         {
-            if (Application.Current.Windows.Count > 0)
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is SettingsWindow settingsWindow)
-                    {
-                        settingsWindow.DialogResult = false;
-                        settingsWindow.Close();
-                        break;
-                    }
-                }
-            }
+            _window.Close();
         } // Cancel
 
         private void ChangeMainHotkey()
@@ -112,22 +101,20 @@ namespace StickyNotes.ViewModels
             });
         } // ChangeSaveHotkey
 
-        private void ShowHotkeyDialog(Action<Hotkey> callback)
+        private static void ShowHotkeyDialog(Action<Hotkey> callback)
         {
-            _hotkeyDialog = new HotkeyDialog();
-            var viewModel = new HotkeyDialogViewModel();
+            var _hotkeyDialog = new HotkeyDialog();
+            var viewModel = new HotkeyDialogViewModel(_hotkeyDialog);
             _hotkeyDialog.DataContext = viewModel;
 
-            _hotkeyDialog.Closed += (s, e) =>
-            {
-                if (_hotkeyDialog?.DialogResult == true)
-                {
-                    callback(viewModel.SelectedHotkey);
-                }
-                _hotkeyDialog = null;
-            };
-
+            var hookSvc = ServiceProvider.GetRequiredService<GlobalHookService>();
+            hookSvc.PauseHook();
             _hotkeyDialog.ShowDialog();
+            hookSvc.ResumeHook();
+            if (_hotkeyDialog?.DialogResult == true)
+            {
+                callback(viewModel.SelectedHotkey);
+            }
         } // ShowHotkeyDialog
 
         private void ChangeDefaultFolder()
@@ -155,7 +142,7 @@ namespace StickyNotes.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка открытия папки: {ex.Message}", "Ошибка",
+                MessageBox.Show($"Error while opening the folder: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // OpenDefaultFolder
@@ -187,7 +174,7 @@ namespace StickyNotes.ViewModels
             }
         } // SelectedFontSize
 
-        public System.Windows.FontWeight SelectedFontWeight
+        public FontWeight SelectedFontWeight
         {
             get => _selectedFontWeight;
             set
@@ -197,7 +184,7 @@ namespace StickyNotes.ViewModels
             }
         } // SelectedFontWeight
 
-        public System.Windows.FontStyle SelectedFontStyle
+        public FontStyle SelectedFontStyle
         {
             get => _selectedFontStyle;
             set
@@ -228,9 +215,9 @@ namespace StickyNotes.ViewModels
                 SelectedFontFamily = new System.Windows.Media.FontFamily(_settings.DefaultFont.FontFamily);
                 SelectedFontSize = _settings.DefaultFont.Size;
                 SelectedFontWeight = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Bold)
-                    ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal;
+                    ? FontWeights.Bold : FontWeights.Normal;
                 SelectedFontStyle = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Italic)
-                    ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal;
+                    ? FontStyles.Italic : FontStyles.Normal;
 
                 OnPropertyChanged(nameof(DefaultFontDisplay));
             }
@@ -241,28 +228,15 @@ namespace StickyNotes.ViewModels
             SelectedFontFamily = new System.Windows.Media.FontFamily(_settings.DefaultFont.FontFamily);
             SelectedFontSize = _settings.DefaultFont.Size;
             SelectedFontWeight = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Bold)
-                ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal;
+                ? FontWeights.Bold : FontWeights.Normal;
             SelectedFontStyle = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Italic)
-                ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal;
+                ? FontStyles.Italic : FontStyles.Normal;
         } // UpdateFontProperties
 
-        // Обновим метод SaveSettings для сохранения шрифта
         private void SaveSettings()
         {
             _settingsService.SaveSettings(_settings);
-
-            if (Application.Current.Windows.Count > 0)
-            {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is SettingsWindow settingsWindow)
-                    {
-                        settingsWindow.DialogResult = true;
-                        settingsWindow.Close();
-                        break;
-                    }
-                }
-            }
+            _window.Close();
         } // SaveSettings
 
     } // SettingsViewModel

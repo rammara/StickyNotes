@@ -121,7 +121,9 @@ namespace StickyNotes.ViewModels
                 InitialDirectory = _settings.DefaultSaveFolder,
                 DefaultExt = ".txt",
                 Filter = "Text files (*.txt)|*.txt|All files (*.*)|*.*",
-                FileName = _title.TrimStart('*', ' ')
+                FileName = _title.TrimStart('*', ' ').Replace("...", ""),
+                AddExtension = true,
+                OverwritePrompt = true
             };
 
             if (dialog.ShowDialog() == true)
@@ -141,7 +143,7 @@ namespace StickyNotes.ViewModels
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка",
+                MessageBox.Show($"Error while saving the file: {ex.Message}", "Error",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         } // SaveToFile
@@ -154,7 +156,7 @@ namespace StickyNotes.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка копирования в буфер: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error while copying the data to the clipboard: {ex.Message}");
             }
         } // CopyToClipboard
 
@@ -301,9 +303,9 @@ namespace StickyNotes.ViewModels
             FontFamily = new System.Windows.Media.FontFamily(_settings.DefaultFont.FontFamily);
             FontSize = _settings.DefaultFont.Size;
             FontWeight = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Bold)
-                ? System.Windows.FontWeights.Bold : System.Windows.FontWeights.Normal;
+                ? FontWeights.Bold : FontWeights.Normal;
             FontStyle = _settings.DefaultFont.Style.HasFlag(System.Drawing.FontStyle.Italic)
-                ? System.Windows.FontStyles.Italic : System.Windows.FontStyles.Normal;
+                ? FontStyles.Italic : FontStyles.Normal;
         } // ApplyFontSettings
 
 

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using StickyNotes.Services;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -95,7 +96,7 @@ namespace StickyNotes.Views
 
             var point = e.GetPosition(this);
 
-            // Проверяем, находится ли курсор в зоне ресайза
+            // Check if the cursor in the resize zone
             if (IsInResizeZone(point))
             {
                 _isResizing = true;
@@ -207,11 +208,11 @@ namespace StickyNotes.Views
 
         private static bool IsInTitleBar(FrameworkElement element)
         {
-            // Проверяем, является ли элемент частью заголовка
+            // Check if the element is a part of the title
             if (element.Name == "TitleBar")
                 return true;
 
-            // Проверяем родителей элемента
+            // Check the parents of the element
             var parent = VisualTreeHelper.GetParent(element) as FrameworkElement;
             while (parent != null)
             {
@@ -233,16 +234,40 @@ namespace StickyNotes.Views
         {
             if (DataContext is not ViewModels.WindowNoteViewModel viewModel) return;
 
-            // Ctrl+C или Ctrl+Insert - копировать весь текст
+            var settings = ServiceProvider.GetRequiredService<SettingsService>();
+            if (!settings.SettingsLoaded)
+            {
+                settings.LoadSettings();
+            }
+
+            var saveHotkey = settings.Current?.SaveHotkey;
+
+            if (e.Key == Key.Escape)
+            {
+                if (viewModel.HasUnsavedChanges)
+                {
+                    var result = MessageBox.Show("Do you want to save this note?", "Unsaved changes", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                    if (result == MessageBoxResult.Cancel) return;
+                    else if (result == MessageBoxResult.Yes)
+                    {
+                        viewModel.SaveCommand.Execute(null);   
+                    }
+                }
+                viewModel.CloseCommand.Execute(null);
+            }
+
+            // Ctrl+C or Ctrl+Insert - copies all text
             if ((e.Key == Key.C && Keyboard.Modifiers == ModifierKeys.Control) ||
                 (e.Key == Key.Insert && Keyboard.Modifiers == ModifierKeys.Control))
             {
                 viewModel.CopyToClipboardCommand.Execute(null);
                 e.Handled = true;
             }
-            // Ctrl+S или F2 - сохранить
+
+         
+            // Ctrl+S - save
             else if ((e.Key == Key.S && Keyboard.Modifiers == ModifierKeys.Control) ||
-                     e.Key == Key.F2)
+                     (saveHotkey != null && saveHotkey.IsPressed(e)))
             {
                 viewModel.SaveCommand.Execute(null);
                 e.Handled = true;

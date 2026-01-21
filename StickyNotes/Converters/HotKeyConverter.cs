@@ -27,4 +27,4 @@ namespace StickyNotes.Converters
             return new Hotkey();
         } // ConvertBack
     } // HotkeyConverter
-}
+} // namespace

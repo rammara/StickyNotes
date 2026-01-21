@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -18,7 +17,7 @@ namespace StickyNotes.Services
 
         public GlobalHookService()
         {
-            // Сохраняем диспетчер UI-потока для безопасного вызова событий
+            // Saving the UI-thread dispatcher for safe event firing
             _dispatcher = Dispatcher.CurrentDispatcher;
             _proc = HookCallback;
             SetHook();
@@ -56,24 +55,24 @@ namespace StickyNotes.Services
         {
             try
             {
-                // Если nCode < 0, то мы должны передать сообщение дальше без обработки
-                if (nCode < 0)
+                // If nCode < 0 or processing is paused, pass the message without processing
+                if (nCode < 0 || _isPaused)
                 {
                     return NativeMethods.CallNextHookExInternal(_hookId, nCode, wParam, lParam);
                 }
 
-                // Получаем информацию о нажатой клавише
+                // Pressed keys
                 int vkCode = Marshal.ReadInt32(lParam);
                 Key key = KeyInterop.KeyFromVirtualKey(vkCode);
 
-                // Получаем состояние модификаторов
+                // Modifier keys state
                 bool ctrlPressed = (NativeMethods.GetAsyncKeyStateInternal(0x11) & 0x8000) != 0;
                 bool shiftPressed = (NativeMethods.GetAsyncKeyStateInternal(0x10) & 0x8000) != 0;
                 bool altPressed = (NativeMethods.GetAsyncKeyStateInternal(0x12) & 0x8000) != 0;
                 bool winPressed = (NativeMethods.GetAsyncKeyStateInternal(0x5B) & 0x8000) != 0 ||
                                   (NativeMethods.GetAsyncKeyStateInternal(0x5C) & 0x8000) != 0;
 
-                // Игнорируем системные клавиши при обработке хоткеев
+                // Ignore some common system hooks
                 if (key == Key.LeftCtrl || key == Key.RightCtrl ||
                     key == Key.LeftShift || key == Key.RightShift ||
                     key == Key.LeftAlt || key == Key.RightAlt ||
@@ -84,7 +83,7 @@ namespace StickyNotes.Services
 
                 var args = new GlobalKeyEventArgs(key, ctrlPressed, shiftPressed, altPressed, winPressed);
 
-                // Асинхронно обрабатываем событие в UI потоке
+                // Invoking in UI thread
                 if (wParam == (IntPtr)NativeMethods.WM_KEYDOWN || wParam == (IntPtr)NativeMethods.WM_SYSKEYDOWN)
                 {
                     _dispatcher.BeginInvoke(new Action(() =>
@@ -127,6 +126,17 @@ namespace StickyNotes.Services
             Dispose(true);
             GC.SuppressFinalize(this);
         } // Dispose
+
+        bool _isPaused = false;
+        public void PauseHook()
+        {
+            _isPaused = true;
+        } // PauseHook
+
+        public void ResumeHook()
+        {
+            _isPaused = false;
+        } // ResumeHook
 
         protected virtual void Dispose(bool disposing)
         {

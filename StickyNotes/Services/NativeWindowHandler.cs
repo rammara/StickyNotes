@@ -27,14 +27,13 @@ namespace StickyNotes.Services
         {
             try
             {
-                // Создаем окно с использованием предопределенного класса "STATIC"
-                // STATIC - стандартный класс Windows, который уже зарегистрирован системой
+                // STATIC is a standard Windows class, already registered
                 _windowHandle = NativeMethods.CreateWindowExInternal(
                     WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE,
-                    "STATIC",  // Используем предопределенный класс
+                    "STATIC",  
                     "StickyNotes Hidden Window",
                     WS_POPUP,
-                    0, 0, 1, 1,  // Минимальные размеры, окно невидимо
+                    0, 0, 1, 1,  // Minimal size
                     IntPtr.Zero,
                     IntPtr.Zero,
                     NativeMethods.GetModuleHandleInternal(null),
@@ -57,7 +56,6 @@ namespace StickyNotes.Services
 
         private static IntPtr WindowProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
         {
-            // Обрабатываем сообщения окна
             switch (msg)
             {
                 case WM_CLOSE:
@@ -65,7 +63,7 @@ namespace StickyNotes.Services
                     return IntPtr.Zero;
 
                 case WM_DESTROY:
-                    // Не завершаем приложение, так как это скрытое окно
+                    // Do not close the app
                     return IntPtr.Zero;
             }
             return NativeMethods.DefWindowProcInternal(hWnd, msg, wParam, lParam);
@@ -92,7 +90,7 @@ namespace StickyNotes.Services
             {
                 if (disposing)
                 {
-                    // Освобождаем управляемые ресурсы
+                    // clearing up if nesessary
                 }
 
                 UnhookWindowProc();

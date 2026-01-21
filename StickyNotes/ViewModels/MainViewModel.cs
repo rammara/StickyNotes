@@ -1,7 +1,6 @@
 ﻿using StickyNotes.Models;
 using StickyNotes.Services;
 using StickyNotes.Views;
-using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -26,19 +25,17 @@ namespace StickyNotes.ViewModels
         {
             Debug.WriteLine("Creating MainViewModel...");
 
-            // Создаем нативное окно
             _windowHandler = new NativeWindowHandler();
-
-            _settingsService = new SettingsService();
+            _settingsService = ServiceProvider.GetRequiredService<SettingsService>();
             _settings = _settingsService.LoadSettings();
 
             Debug.WriteLine($"Settings loaded. Main hotkey: {_settings.MainHotkey}");
 
-            _globalHookService = new GlobalHookService();
+            _globalHookService = ServiceProvider.GetRequiredService<GlobalHookService>();
             _globalHookService.KeyDown += OnGlobalKeyDown;
 
-            // Создаем сервис иконки трея
             _trayIconService = new TrayIconService(_windowHandler);
+            ServiceProvider.RegisterService(_trayIconService);
             _trayIconService.DoubleClick += OnTrayDoubleClick;
             _trayIconService.RightClick += OnTrayRightClick;
 
@@ -54,12 +51,11 @@ namespace StickyNotes.ViewModels
             {
                 Debug.WriteLine($"Global hook: Key={e.Key}, Ctrl={e.CtrlPressed}, Shift={e.ShiftPressed}, Alt={e.AltPressed}, Win={e.WinPressed}");
 
-                // Проверяем, является ли это сочетанием клавиш
                 if (IsHotkeyPressed(e, _settings.MainHotkey))
                 {
                     Debug.WriteLine($"Main hotkey detected: {_settings.MainHotkey}");
 
-                    // Проверяем, не находится ли фокус в текстовом поле
+                    // Check if the focus is set on the textbox
                     bool hasKeyboardFocusOnTextBox = Application.Current.Dispatcher.Invoke(() =>
                     {
                         var focusedElement = Keyboard.FocusedElement;
@@ -104,7 +100,7 @@ namespace StickyNotes.ViewModels
                 if (e.AltPressed) pressedModifiers |= HotkeyModifiers.Alt;
                 if (e.WinPressed) pressedModifiers |= HotkeyModifiers.Win;
 
-                // Преобразуем WPF Key в Windows Forms Keys
+                // WPF Key to Windows Forms Keys
                 int vkCode = KeyInterop.VirtualKeyFromKey(e.Key);
                 System.Windows.Forms.Keys formsKey = (System.Windows.Forms.Keys)vkCode;
 
@@ -126,7 +122,6 @@ namespace StickyNotes.ViewModels
 
         private void OnTrayRightClick(object? sender, EventArgs e)
         {
-            // Создаем контекстное меню в UI потоке
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var contextMenu = new System.Windows.Controls.ContextMenu();
@@ -144,13 +139,11 @@ namespace StickyNotes.ViewModels
                 var exitItem = new System.Windows.Controls.MenuItem { Header = "Exit" };
                 exitItem.Click += (s, args) => ExitApplication();
                 contextMenu.Items.Add(exitItem);
-
-                // Показываем меню
+               
                 contextMenu.IsOpen = true;
             });
         } // OnTrayRightClick
-
-        // Добавим метод для проверки горячей клавиши сохранения в окне заметки
+        
         public bool IsSaveHotkeyPressed(KeyEventArgs e)
         {
             try
@@ -194,21 +187,6 @@ namespace StickyNotes.ViewModels
             }
         } // OnTrayDoubleClick
 
-        //public void CreateNewNote()
-        //{
-        //    _noteCounter++;
-        //    var noteWindow = new WindowNote();
-        //    var viewModel = new WindowNoteViewModel(noteWindow, _settings, _noteCounter);
-        //    noteWindow.DataContext = viewModel;
-
-        //    // Позиционируем окно со смещением
-        //    noteWindow.Left = SystemParameters.WorkArea.Left + (_noteCounter * 30) % 500;
-        //    noteWindow.Top = SystemParameters.WorkArea.Top + (_noteCounter * 30) % 300;
-
-        //    noteWindow.Show();
-        //} // CreateNewNote
-
-        // Обновленный метод CreateNewNote
         public void CreateNewNote()
         {
             _noteCounter++;
@@ -216,19 +194,15 @@ namespace StickyNotes.ViewModels
             var viewModel = new WindowNoteViewModel(noteWindow, _settings, _noteCounter);
             noteWindow.DataContext = viewModel;
 
-            // Позиционируем окно со смещением
             noteWindow.Left = SystemParameters.WorkArea.Left + (_noteCounter * 30) % 500;
             noteWindow.Top = SystemParameters.WorkArea.Top + (_noteCounter * 30) % 300;
-
-            // Показываем окно
             noteWindow.Show();
 
-            // Принудительно активируем и выводим на передний план
             noteWindow.Dispatcher.BeginInvoke(new Action(() =>
             {
                 WindowHelper.ForceForegroundWindow(noteWindow);
 
-                // Фокусируемся на текстовом поле, если оно есть
+                // Focus on the text field if it exists
                 if (noteWindow is WindowNote wn && wn.FindName("NoteTextBox") is System.Windows.Controls.TextBox textBox)
                 {
                     textBox.Focus();
@@ -236,14 +210,12 @@ namespace StickyNotes.ViewModels
             }), DispatcherPriority.Background);
         }
 
-
-
         public void ShowSettings()
         {
             if (_currentSettingsWindow == null || !_currentSettingsWindow.IsVisible)
             {
                 _currentSettingsWindow = new SettingsWindow();
-                var viewModel = new SettingsViewModel(_settingsService);
+                var viewModel = new SettingsViewModel((SettingsWindow)_currentSettingsWindow);
                 _currentSettingsWindow.DataContext = viewModel;
                 _currentSettingsWindow.Closed += (s, args) =>
                 {
@@ -270,7 +242,7 @@ namespace StickyNotes.ViewModels
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Ошибка создания папки: {ex.Message}");
+                Debug.WriteLine($"Error creating folder: {ex.Message}");
             }
         } // EnsureDefaultSaveFolder
 
@@ -297,14 +269,13 @@ namespace StickyNotes.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Ошибка обновления реестра: {ex.Message}");
+                Debug.WriteLine($"Error while updating the registry: {ex.Message}");
             }
         } // UpdateStartupRegistry
 
-        public void ExitApplication()
+        public static void ExitApplication()
         {
-            _globalHookService.Dispose();
-            _trayIconService.Dispose();
+            ServiceProvider.Clear();
             Application.Current.Shutdown();
         } // ExitApplication
 
@@ -320,9 +291,7 @@ namespace StickyNotes.ViewModels
             {
                 if (disposing)
                 {
-                    _globalHookService.Dispose();
-                    _trayIconService.Dispose();
-                    _windowHandler.Dispose();
+                    ServiceProvider.Clear();
                 }
                 _disposed = true;
             }

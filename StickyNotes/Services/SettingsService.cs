@@ -17,6 +17,9 @@ namespace StickyNotes.Services
             _settingsPath = Path.Combine(appFolder, "settings.json");
         } // SettingsService
 
+        public bool SettingsLoaded { get; private set; }
+        public SettingsModel? Current { get; private set; }
+
         public SettingsModel LoadSettings()
         {
             try
@@ -24,12 +27,14 @@ namespace StickyNotes.Services
                 if (File.Exists(_settingsPath))
                 {
                     string json = File.ReadAllText(_settingsPath);
-                    return JsonSerializer.Deserialize<SettingsModel>(json) ?? new SettingsModel();
+                    Current = JsonSerializer.Deserialize<SettingsModel>(json) ?? new SettingsModel();
+                    SettingsLoaded = true;
+                    return Current;
                 }
             }
             catch (Exception)
             {
-                // В случае ошибки возвращаем настройки по умолчанию
+                // return defaulsts
             }
 
             return new SettingsModel();
@@ -47,7 +52,7 @@ namespace StickyNotes.Services
             catch (Exception ex)
             {
                 // Обработка ошибки сохранения
-                System.Diagnostics.Debug.WriteLine($"Ошибка сохранения настроек: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Error while saving the settings: {ex.Message}");
             }
         } // SaveSettings
     } // SettingsService

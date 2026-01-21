@@ -111,3 +111,5 @@ D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\refint\Stic
 D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\StickyNotes.pdb
 D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\StickyNotes.genruntimeconfig.cache
 D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\ref\StickyNotes.dll
+D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\StickyNotes.Properties.Resources.resources
+D:\Projects\rammara\StickyNotes\StickyNotes\obj\Debug\net8.0-windows\StickyNotes.csproj.GenerateResource.cache
