@@ -7,10 +7,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>Icons\Childish-Note_24983.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Views\Childish-Note_24983.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Icons\Childish-Note_24983.ico" />
   </ItemGroup>
 
   <ItemGroup>
