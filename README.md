@@ -2,7 +2,7 @@
 
 A modern, feature-rich sticky notes application for Windows built with WPF (.NET) that runs in the system tray with global hotkey support.
 
-![Application Screenshot](https://via.placeholder.com/800x450.png?text=StickyNotes+Screenshot)
+![Application Screenshot](https://github.com/rammara/StickyNotes/blob/main/sample.png)
 
 ## ✨ Features
 
