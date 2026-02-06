@@ -68,8 +68,8 @@ A modern, feature-rich sticky notes application for Windows built with WPF (.NET
 ## 📁 Project Structure
 ```text
 StickyNotes/
-├── Models/           # Data models (SettingsModel, Hotkey, etc.)
-├── ViewModels/       # MVVM ViewModels
+├── Models/          # Data models (SettingsModel, Hotkey, etc.)
+├── ViewModels/      # MVVM ViewModels
 ├── Views/           # WPF Views and Windows
 ├── Services/        # Business logic and system services
 ├── Converters/      # WPF value converters
