@@ -20,12 +20,19 @@ namespace StickyNotes.ViewModels
         private Point _dragStartPoint;
 
         // Обновим конструктор WindowNoteViewModel
-        public WindowNoteViewModel(WindowNote window, SettingsModel settings, int counter)
+        public WindowNoteViewModel(WindowNote window, SettingsModel settings, int counter, string? path = null)
         {
             _window = window;
             _settings = settings;
-            _title = $"New note {counter}...";
-
+            if (!string.IsNullOrEmpty(path))
+            {
+                _filePath = path;
+                _title = path;
+            }
+            else
+            {
+                _title = $"New note {counter}...";
+            }
             // Устанавливаем шрифт из настроек
             ApplyFontSettings();
 

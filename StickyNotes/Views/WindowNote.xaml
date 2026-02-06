@@ -9,7 +9,7 @@
         Background="Transparent"
         ShowInTaskbar="True"
         ResizeMode="CanResizeWithGrip"
-        KeyDown="Window_KeyDown" Icon="/Icons/Childish-Note_24983.png">
+        KeyDown="Window_KeyDown" Icon="pack://application:,,,/Icons/Childish-Note_24983.png">
 
     <Window.Resources>
         <cnv:BoolToRotationConverter x:Key="BoolToRotationConverter" />

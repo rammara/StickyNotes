@@ -6,7 +6,7 @@
         Width="400"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        PreviewKeyDown="Window_PreviewKeyDown" Icon="/Icons/Childish-Note_24983.png" >
+        PreviewKeyDown="Window_PreviewKeyDown" Icon="pack://application:,,,/Icons/Childish-Note_24983.png" >
 
     <Grid Margin="20">
         <Grid.RowDefinitions>

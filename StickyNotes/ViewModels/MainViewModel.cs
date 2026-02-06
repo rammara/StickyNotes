@@ -21,7 +21,9 @@ namespace StickyNotes.ViewModels
         private int _noteCounter = 0;
         private bool _disposed = false;
 
-        public MainViewModel()
+
+
+        public MainViewModel(string[] args)
         {
             Debug.WriteLine("Creating MainViewModel...");
 
@@ -41,6 +43,15 @@ namespace StickyNotes.ViewModels
 
             EnsureDefaultSaveFolder();
             UpdateStartupRegistry();
+
+            if (args is not null && args.Length > 0 && !string.IsNullOrEmpty(args[0]))
+            {
+                var path = Path.GetDirectoryName(args[0]);
+                if (Directory.Exists(path))
+                {
+                    CreateNewNote(args[0]);
+                }
+            }
 
             Debug.WriteLine("MainViewModel created successfully");
         } // MainViewModel
@@ -89,6 +100,15 @@ namespace StickyNotes.ViewModels
                 Debug.WriteLine($"Error in OnGlobalKeyDown: {ex.Message}");
             }
         } // OnGlobalKeyDown
+
+        public void TryOpenNote(string path)
+        {
+            var dir = Path.GetDirectoryName(path);
+            if (Directory.Exists(dir))
+            {
+                CreateNewNote(path);
+            }
+        } // TryOpenNote
 
         private static bool IsHotkeyPressed(GlobalKeyEventArgs e, Hotkey hotkey)
         {
@@ -187,11 +207,11 @@ namespace StickyNotes.ViewModels
             }
         } // OnTrayDoubleClick
 
-        public void CreateNewNote()
+        public void CreateNewNote(string? fileName = null)
         {
             _noteCounter++;
             var noteWindow = new WindowNote();
-            var viewModel = new WindowNoteViewModel(noteWindow, _settings, _noteCounter);
+            var viewModel = new WindowNoteViewModel(noteWindow, _settings, _noteCounter, fileName);
             noteWindow.DataContext = viewModel;
 
             noteWindow.Left = SystemParameters.WorkArea.Left + (_noteCounter * 30) % 500;

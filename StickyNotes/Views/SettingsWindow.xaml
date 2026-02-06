@@ -7,7 +7,7 @@
         Height="500" 
         Width="450"
         WindowStartupLocation="CenterScreen"
-        ResizeMode="NoResize" Icon="/Views/Childish-Note_24983.png">
+        ResizeMode="NoResize" Icon="pack://application:,,,/Icons/Childish-Note_24983.png">
 
     <Window.Resources>
         <x:Array x:Key="doubleClickActions" Type="local:DoubleClickAction">

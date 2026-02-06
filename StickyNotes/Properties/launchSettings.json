@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "StickyNotes": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\info.txt"
+    }
+  }
+}
