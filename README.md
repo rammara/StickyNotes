@@ -14,7 +14,6 @@ A modern, feature-rich sticky notes application for Windows built with WPF (.NET
 - **Single Instance** - Only one instance runs at a time, with argument passing
 
 ### 📝 Note Management
-- **Rich Text Editing** - Full text editing with formatting support
 - **Pinning Notes** - Keep notes always on top of other windows
 - **Custom Fonts** - Configure default font family, size, weight, and style
 - **Auto-Save Position** - Notes remember their position and size
