@@ -2,7 +2,7 @@
 
 A modern, feature-rich sticky notes application for Windows built with WPF (.NET) that runs in the system tray with global hotkey support.
 
-![Application Screenshot](https://via.placeholder.com/800x450.png?text=StickyNotes+Screenshot)
+![Application Screenshot](https://github.com/rammara/StickyNotes/blob/main/sample.png)
 
 ## ✨ Features
 
@@ -14,7 +14,6 @@ A modern, feature-rich sticky notes application for Windows built with WPF (.NET
 - **Single Instance** - Only one instance runs at a time, with argument passing
 
 ### 📝 Note Management
-- **Rich Text Editing** - Full text editing with formatting support
 - **Pinning Notes** - Keep notes always on top of other windows
 - **Custom Fonts** - Configure default font family, size, weight, and style
 - **Auto-Save Position** - Notes remember their position and size
@@ -67,13 +66,15 @@ A modern, feature-rich sticky notes application for Windows built with WPF (.NET
 - **Thread Safety** - Mutex for single instance enforcement
 
 ## 📁 Project Structure
+```text
 StickyNotes/
-├── Models/ # Data models (SettingsModel, Hotkey, etc.)
-├── ViewModels/ # MVVM ViewModels
-├── Views/ # WPF Views and Windows
-├── Services/ # Business logic and system services
-├── Converters/ # WPF value converters
-└── Resources/ # Icons and application resources
+├── Models/          # Data models (SettingsModel, Hotkey, etc.)
+├── ViewModels/      # MVVM ViewModels
+├── Views/           # WPF Views and Windows
+├── Services/        # Business logic and system services
+├── Converters/      # WPF value converters
+└── Resources/       # Icons and application resources
+```
 
 ### Key Components
 - **App.xaml(.cs)** - Application entry point and lifecycle
