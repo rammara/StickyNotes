@@ -28,6 +28,19 @@ namespace StickyNotes.ViewModels
             {
                 _filePath = path;
                 _title = path;
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        _text = File.ReadAllText(path);
+                    }
+                    catch(Exception ex)
+                    {
+                        MessageBox.Show($"Could not open the file {path}.\n{ex.Message}", "Error opening file", MessageBoxButton.OK, MessageBoxImage.Error);
+                        _filePath = string.Empty;
+                        _title = $"New note {counter}...";
+                    }
+                }
             }
             else
             {
